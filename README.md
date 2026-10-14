@@ -26,7 +26,7 @@ A estrutura já foi instalada. `supabase/instalacao-limpa.sql` serve apenas para
 
 ## Validação
 
-Build e os seis testes em `tests/seriesDates.test.mjs` passaram. As permissões reais de criar ambiente, conta automática, receita e despesa passaram no banco próprio. O login na interface exige a senha do responsável e ainda não foi validado nesta sessão.
+Build e os seis testes em `tests/seriesDates.test.mjs` passaram. As permissões reais de criar ambiente, conta automática, receita e despesa passaram no banco próprio. Login validado no endereço público como Master em 14/10/2026. O dashboard abriu zerado e os controles Novo plano / centro, Nova despesa e Nova receita foram conferidos na interface.
 
 ## Origem e isolamento
 
