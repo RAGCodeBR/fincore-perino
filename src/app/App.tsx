@@ -135,6 +135,7 @@ type User = {
   role: "master" | "operador";
   units: Unit[];
   canViewReports: boolean;
+  canCreatePlans: boolean;
   hiddenScreens: string[];
 };
 // Abas que o Master pode ocultar por usuário (a aba "Usuários" é sempre
@@ -176,13 +177,15 @@ const units: CostCenter[] = [
   makeCostCenter("Pessoa Física", "PF", "amber"),
 ];
 const reportsAccessFlag = "__reports__";
+const createPlansAccessFlag = "__create_plans__";
 // Filtra a flag legada para que ela não apareça como centro de custo.
 const teamNotesAccessFlag = "__team_notes__";
 const profileAccess = (values: string[] | null | undefined) => {
   const raw = values || [];
   return {
-    units: raw.filter((value) => value !== reportsAccessFlag && value !== teamNotesAccessFlag),
+    units: raw.filter((value) => value !== reportsAccessFlag && value !== teamNotesAccessFlag && value !== createPlansAccessFlag),
     canViewReports: raw.includes(reportsAccessFlag),
+    canCreatePlans: raw.includes(createPlansAccessFlag),
   };
 };
 const costCenterVisual = (row: CostCenterRow): CostCenter => {
@@ -602,6 +605,7 @@ function Login({ onLogin }: { onLogin: (user: User) => void }) {
       role: profile.role as User["role"],
       units: access.units,
       canViewReports: access.canViewReports,
+      canCreatePlans: access.canCreatePlans,
       hiddenScreens: profile.hidden_screens ?? [],
     };
     localStorage.setItem("fincore.user", JSON.stringify(user));
@@ -3620,6 +3624,7 @@ function App() {
         role: profile.role as User["role"],
         units: access.units,
         canViewReports: access.canViewReports,
+      canCreatePlans: access.canCreatePlans,
         hiddenScreens: profile.hidden_screens ?? [],
       });
       setAuthReady(true);
@@ -3825,6 +3830,7 @@ function App() {
           role: profile.role as User["role"],
           units: access.units,
           canViewReports: access.canViewReports,
+      canCreatePlans: access.canCreatePlans,
           hiddenScreens: profile.hidden_screens ?? [],
         };
       }),
@@ -3836,15 +3842,18 @@ function App() {
     setDeletingCategory(null);
   };
   const createCenter = async (name: string, initials: string, color: string) => {
-    if (currentUser?.role !== "master") throw new Error("Apenas o Master pode criar planos de contas.");
+    if (!currentUser || (currentUser.role !== "master" && !currentUser.canCreatePlans)) throw new Error("Seu acesso não permite criar planos de contas.");
     if (!centerTableReady) throw new Error("A configuração do banco para novos centros ainda não está disponível.");
-    if (name.length < 2 || name.length > 80 || name === "Todos" || name === reportsAccessFlag || name === teamNotesAccessFlag)
+    if (name.length < 2 || name.length > 80 || name === "Todos" || name === reportsAccessFlag || name === teamNotesAccessFlag || name === createPlansAccessFlag)
       throw new Error("Informe um nome válido entre 2 e 80 caracteres.");
     if (centers.some((center) => center.name.toLocaleLowerCase("pt-BR") === name.toLocaleLowerCase("pt-BR")))
       throw new Error("Já existe um centro de custo com esse nome.");
     const saved = await createRemoteCostCenter(name, initials || name.slice(0, 2).toLocaleUpperCase("pt-BR"), color);
     const center = costCenterVisual(saved as CostCenterRow);
     setCenters((old) => [...old, center]);
+    setCurrentUser((user) => user && user.role !== "master"
+      ? { ...user, units: [...new Set([...user.units, center.name])] }
+      : user);
     try {
       const accountRows = await readAuthenticatedRows<Account>("accounts");
       setAccounts(accountRows);
@@ -3957,6 +3966,7 @@ function App() {
     const allowedUnits = [
       ...user.units,
       ...(user.canViewReports ? [] : [reportsAccessFlag]),
+      ...(user.canCreatePlans ? [createPlansAccessFlag] : []),
     ];
     const { error } = await supabase
       .from("profiles")
@@ -3977,6 +3987,7 @@ function App() {
         allowed_units: [
           ...allowedUnits,
           ...(canViewReports ? [reportsAccessFlag] : []),
+          ...(user.canCreatePlans ? [createPlansAccessFlag] : []),
         ],
         hidden_screens: hiddenScreens,
       })
@@ -4038,6 +4049,7 @@ function App() {
   // Receitas, clientes/pagadores, saldos e resultado são exclusivos do Master
   // (o banco também bloqueia; aqui só deixamos a tela coerente).
   const isMaster = currentUser.role === "master";
+  const canCreatePlans = isMaster || currentUser.canCreatePlans;
   const allowedUnits =
     currentUser.role === "master"
       ? centers
@@ -5111,7 +5123,7 @@ function App() {
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {currentUser.role === "master" && (
+                  {canCreatePlans && (
                     <button
                       onClick={() => setCenterModal(true)}
                       disabled={!centerTableReady}
@@ -5170,7 +5182,7 @@ function App() {
                         </div>
                       )}
                     </div>
-                    {((isMaster ? ["receita", "despesa"] : ["despesa"]) as Kind[]).map((k) => (
+                    {((canCreatePlans ? ["receita", "despesa"] : ["despesa"]) as Kind[]).map((k) => (
                       <div key={k} className="mb-3">
                         <p
                           className={`mb-2 text-[11px] font-extrabold uppercase ${k === "receita" ? "text-emerald-700" : "text-red-700"}`}
@@ -5559,7 +5571,7 @@ function App() {
         <NewCategory
           close={() => setCategoryModal(false)}
           allowedUnits={allowedUnits}
-          allowIncome={isMaster}
+          allowIncome={canCreatePlans}
           save={async (c) => {
             await saveRemoteCategory(c);
             setCategories((x) => [...x, c]);
@@ -5570,7 +5582,7 @@ function App() {
         <NewCategory
           category={editingCategory}
           allowedUnits={allowedUnits}
-          allowIncome={isMaster}
+          allowIncome={canCreatePlans}
           close={() => setEditingCategory(null)}
           save={async (c) => {
             await saveRemoteCategory(c);

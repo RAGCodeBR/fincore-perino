@@ -138,10 +138,11 @@ export async function saveRemoteCategory(category: any) {
 
 export async function createRemoteCostCenter(name: string, initials: string, color: string) {
   return withFreshSession(() =>
-    supabase.from("cost_centers")
-      .insert({ name, initials, color })
-      .select("name, initials, color")
-      .single(),
+    supabase.rpc("create_managed_cost_center", {
+      requested_name: name,
+      requested_initials: initials,
+      requested_color: color,
+    }).single(),
   );
 }
 

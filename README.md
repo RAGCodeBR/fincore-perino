@@ -33,3 +33,7 @@ Build e os seis testes em `tests/seriesDates.test.mjs` passaram. As permissões 
 Base: `RAGCodeBR/sistema-financeiro`, commit `e3d8f533bbc6dd7751cbb68cc6c23ba800d6a0ee`. O repositório e banco do FinCore original foram preservados. Esta aplicação bloqueia a conexão com o projeto Supabase original.
 
 A seção Notas da equipe foi retirada desta edição Perino em 14/10/2026.
+
+## Criação delegada de planos
+
+Operadores com a permissão `__create_plans__` podem criar planos/centros e categorias. A operação `create_managed_cost_center` valida a permissão no banco e concede ao criador acesso ao centro criado. O perfil continua Operador; administração de usuários e edição/exclusão de centros continuam restritas ao Master. A permissão é preservada nas demais edições de acesso.
