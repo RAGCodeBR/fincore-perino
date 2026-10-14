@@ -106,6 +106,7 @@ export default function BanksSection({
         {canManage && ready && (
           <form onSubmit={add} className="flex flex-wrap gap-2">
             <input
+              aria-label="Nome da conta bancária"
               value={name}
               onChange={(event) => setName(event.target.value)}
               placeholder="Ex.: Itaú PJ • conta 12345-6"

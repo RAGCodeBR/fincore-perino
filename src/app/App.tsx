@@ -4478,7 +4478,7 @@ function App() {
                           : "Lançamentos"}
               </h1>
               <p className="text-xs text-gray-400">
-                {allowedUnits.map((unit) => unit.name).join(", ") || "Centros de custo"}
+                {screen === "contas" ? "Cadastre e acompanhe suas contas bancárias" : allowedUnits.map((unit) => unit.name).join(", ") || "Centros de custo"}
               </p>
             </div>
           </div>
