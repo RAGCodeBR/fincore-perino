@@ -1,0 +1,16 @@
+/* FinCore Perino identity. Semantic red/green financial colors stay intact. */
+@theme {
+  --color-brand-50: #faf5e8;
+  --color-brand-100: #f2e6c7;
+  --color-brand-200: #e8cd88;
+  --color-brand-300: #dfbd68;
+  --color-brand-400: #d4af55;
+  --color-brand-500: #bd9237;
+  --color-brand-600: #987221;
+  --color-brand-700: #795a19;
+  --color-brand-800: #5e4617;
+  --color-brand-900: #403213;
+  --color-brand-950: #241c0d;
+}
+:root { accent-color: #987221; }
+::selection { background: #e8cd88; color: #191918; }

@@ -68,7 +68,7 @@ export function Month({ value, move }: { value: Date; move: (n: number) => void 
       >
         <ChevronLeft className="h-5 w-5" />
       </button>
-      <span className="min-w-40 text-center text-sm font-extrabold text-[#14213d]">
+      <span className="min-w-40 text-center text-sm font-extrabold text-[#191918]">
         {labelMonth(value)}
       </span>
       <button

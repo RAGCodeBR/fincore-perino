@@ -113,7 +113,7 @@ export default function BanksSection({
             />
             <button
               disabled={busy}
-              className="flex items-center gap-1 rounded-xl bg-blue-700 px-3 py-2 text-xs font-bold text-white disabled:opacity-50"
+              className="flex items-center gap-1 rounded-xl bg-brand-700 px-3 py-2 text-xs font-bold text-white disabled:opacity-50"
             >
               <Plus className="h-4 w-4" /> Cadastrar banco
             </button>
@@ -155,7 +155,7 @@ export default function BanksSection({
                 <div className="flex shrink-0 gap-1 text-xs font-bold">
                   {editingId === bank.id ? (
                     <>
-                      <button type="button" disabled={busy} onClick={() => void rename(bank)} className="rounded px-1.5 py-1 text-blue-700 hover:bg-blue-50">Salvar</button>
+                      <button type="button" disabled={busy} onClick={() => void rename(bank)} className="rounded px-1.5 py-1 text-brand-700 hover:bg-brand-50">Salvar</button>
                       <button type="button" onClick={() => setEditingId(null)} className="rounded px-1.5 py-1 text-slate-500 hover:bg-slate-50">Cancelar</button>
                     </>
                   ) : (
@@ -167,7 +167,7 @@ export default function BanksSection({
                           setEditName(bank.name);
                           setError("");
                         }}
-                        className="rounded px-1.5 py-1 text-blue-700 hover:bg-blue-50"
+                        className="rounded px-1.5 py-1 text-brand-700 hover:bg-brand-50"
                       >
                         Editar
                       </button>

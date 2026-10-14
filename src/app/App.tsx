@@ -460,11 +460,11 @@ function ScopeDialog({
     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/50 p-4 backdrop-blur-sm">
       <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
         <div
-          className={`mb-4 flex h-11 w-11 items-center justify-center rounded-full ${action === "excluir" ? "bg-red-100 text-red-600" : "bg-blue-100 text-blue-600"}`}
+          className={`mb-4 flex h-11 w-11 items-center justify-center rounded-full ${action === "excluir" ? "bg-red-100 text-red-600" : "bg-brand-100 text-brand-600"}`}
         >
           {action === "excluir" ? "−" : "✎"}
         </div>
-        <h2 className="text-lg font-extrabold text-[#14213d]">
+        <h2 className="text-lg font-extrabold text-[#191918]">
           {action === "editar"
             ? "Alterar lançamento recorrente"
             : "Excluir lançamento recorrente"}
@@ -482,7 +482,7 @@ function ScopeDialog({
           </button>
           <button
             onClick={series}
-            className={`rounded-xl px-4 py-3 text-sm font-bold text-white ${action === "excluir" ? "bg-red-600" : "bg-blue-700"}`}
+            className={`rounded-xl px-4 py-3 text-sm font-bold text-white ${action === "excluir" ? "bg-red-600" : "bg-brand-700"}`}
           >
             {action === "editar"
               ? "Alterar toda a série"
@@ -516,7 +516,7 @@ function DeleteCategoryDialog({
         <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-red-100 text-xl font-bold text-red-600">
           −
         </div>
-        <h2 className="text-lg font-extrabold text-[#14213d]">
+        <h2 className="text-lg font-extrabold text-[#191918]">
           Excluir categoria
         </h2>
         <p className="mt-2 text-sm text-gray-500">
@@ -613,38 +613,38 @@ function Login({ onLogin }: { onLogin: (user: User) => void }) {
     onLogin(user);
   };
   return (
-    <main className="min-h-screen bg-[#e8edf5] p-3 text-[#14213d] sm:p-5">
+    <main className="min-h-screen bg-[#ece6d8] p-3 text-[#191918] sm:p-5">
       <div className="mx-auto grid min-h-[calc(100vh-24px)] max-w-[1500px] overflow-hidden rounded-[2rem] bg-white shadow-2xl lg:grid-cols-[1.15fr_.85fr]">
-        <section className="relative flex flex-col justify-between overflow-hidden bg-[#14213d] p-9 text-white sm:p-14">
-          <div className="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-blue-500/25 blur-3xl" />
-          <div className="absolute -bottom-24 -left-24 h-80 w-80 rounded-full bg-indigo-500/20 blur-3xl" />
-          <p className="relative text-xl font-extrabold tracking-tight">
-            fincore
-          </p>
+        <section className="relative flex flex-col justify-between overflow-hidden bg-[#191918] p-9 text-white sm:p-14">
+          <div className="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-brand-500/25 blur-3xl" />
+          <div className="absolute -bottom-24 -left-24 h-80 w-80 rounded-full bg-brand-500/20 blur-3xl" />
+          <div className="relative">
+            <p className="text-2xl font-extrabold tracking-tight text-[#d4af55]">fincore<span className="ml-2 text-xs font-semibold uppercase tracking-[.25em]">Perino</span></p>
+          </div>
           <div className="relative max-w-xl py-12">
-            <p className="mb-5 text-xs font-extrabold tracking-[.2em] text-blue-200">
-              GESTÃO FINANCEIRA
+            <p className="mb-5 text-xs font-extrabold tracking-[.2em] text-brand-200">
+              GESTÃO FINANCEIRA · PERINO
             </p>
             <h1 className="text-5xl font-extrabold leading-[1.04] sm:text-6xl">
               Clareza para decidir. Controle para crescer.
             </h1>
-            <p className="mt-7 max-w-lg text-lg leading-relaxed text-blue-100">
+            <p className="mt-7 max-w-lg text-lg leading-relaxed text-brand-100">
               Organize receitas, despesas, contas e operações com uma visão
               financeira construída para o seu dia a dia.
             </p>
           </div>
-          <p className="relative text-sm text-blue-200">
-            fincore · gestão que acompanha suas decisões
+          <p className="relative text-sm text-brand-200">
+            FinCore Perino · gestão que acompanha suas decisões
           </p>
         </section>
-        <section className="flex items-center justify-center bg-[#f8fafc] p-8 sm:p-14">
+        <section className="flex items-center justify-center bg-[#fcfaf5] p-8 sm:p-14">
           <form onSubmit={submit} className="w-full max-w-md">
             <img
-              src="/sistema-financeiro/fincore-logo-transparent.png"
-              alt="Fincore"
+              src={`${import.meta.env.BASE_URL}fincore-perino-logo.svg`}
+              alt="FinCore Perino"
               className="mb-12 w-64 max-w-full"
             />
-            <p className="text-xs font-extrabold tracking-widest text-blue-700">
+            <p className="text-xs font-extrabold tracking-widest text-brand-700">
               BEM-VINDO
             </p>
             <h2 className="mt-2 text-3xl font-extrabold">
@@ -658,7 +658,7 @@ function Login({ onLogin }: { onLogin: (user: User) => void }) {
               <input
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-1.5 w-full rounded-xl border border-gray-200 bg-gray-50 p-3.5 text-sm font-normal outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                className="mt-1.5 w-full rounded-xl border border-gray-200 bg-gray-50 p-3.5 text-sm font-normal outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
               />
             </label>
             <label className="mt-4 block text-xs font-bold text-gray-600">
@@ -667,7 +667,7 @@ function Login({ onLogin }: { onLogin: (user: User) => void }) {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="mt-1.5 w-full rounded-xl border border-gray-200 bg-gray-50 p-3.5 text-sm font-normal outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                className="mt-1.5 w-full rounded-xl border border-gray-200 bg-gray-50 p-3.5 text-sm font-normal outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
               />
             </label>
             {error && (
@@ -675,7 +675,7 @@ function Login({ onLogin }: { onLogin: (user: User) => void }) {
             )}
             <button
               disabled={busy}
-              className="mt-6 w-full rounded-xl bg-blue-700 py-3.5 text-sm font-bold text-white shadow-lg shadow-blue-700/20 disabled:cursor-wait disabled:opacity-70"
+              className="mt-6 w-full rounded-xl bg-[#d4af55] py-3.5 text-sm font-bold text-[#191918] shadow-lg shadow-brand-700/20 transition hover:bg-[#e1bf69] disabled:cursor-wait disabled:opacity-70"
             >
               {busy ? "Entrando..." : "Entrar no Fincore"}
             </button>
@@ -752,7 +752,7 @@ function NewCategory({
       >
         <header className="flex items-center justify-between border-b px-6 py-4">
           <div>
-            <h2 className="font-extrabold text-[#14213d]">
+            <h2 className="font-extrabold text-[#191918]">
               {category ? "Editar categoria" : "Nova categoria"}
             </h2>
             <p className="text-xs text-gray-400">
@@ -806,7 +806,7 @@ function NewCategory({
                 <button
                   type="button"
                   onClick={() => setIcon(x)}
-                  className={`h-9 w-9 rounded-lg border text-lg ${icon === x ? "border-blue-600 bg-blue-50" : ""}`}
+                  className={`h-9 w-9 rounded-lg border text-lg ${icon === x ? "border-brand-600 bg-brand-50" : ""}`}
                   key={x}
                 >
                   {x}
@@ -843,7 +843,7 @@ function NewCategory({
           </button>
           <button
             disabled={saving}
-            className="flex-1 rounded-xl bg-blue-700 py-2.5 text-sm font-bold text-white disabled:opacity-60"
+            className="flex-1 rounded-xl bg-brand-700 py-2.5 text-sm font-bold text-white disabled:opacity-60"
           >
             {saving
               ? "Salvando no banco..."
@@ -893,7 +893,7 @@ function CostCenterForm({
       }} className="w-full max-w-md rounded-2xl bg-white shadow-2xl">
         <header className="flex items-start justify-between border-b px-6 py-4">
           <div>
-            <h2 className="font-extrabold text-[#14213d]">{isEdit ? "Editar plano de contas" : "Novo plano de contas"}</h2>
+            <h2 className="font-extrabold text-[#191918]">{isEdit ? "Editar plano de contas" : "Novo plano de contas"}</h2>
             <p className="mt-1 text-xs text-slate-500">{isEdit ? "Ajuste a sigla e a cor deste centro de custo." : "Cria um centro de custo com categorias próprias."}</p>
           </div>
           <button type="button" onClick={close} aria-label="Fechar"><X className="h-5 w-5" /></button>
@@ -927,7 +927,7 @@ function CostCenterForm({
         </div>
         <footer className="flex gap-3 border-t bg-gray-50 px-6 py-4">
           <button type="button" onClick={close} className="flex-1 rounded-xl border py-2.5 text-sm font-bold">Cancelar</button>
-          <button disabled={saving} className="flex-1 rounded-xl bg-blue-700 py-2.5 text-sm font-bold text-white disabled:opacity-50">{saving ? "Salvando…" : isEdit ? "Salvar alterações" : "Criar plano"}</button>
+          <button disabled={saving} className="flex-1 rounded-xl bg-brand-700 py-2.5 text-sm font-bold text-white disabled:opacity-50">{saving ? "Salvando…" : isEdit ? "Salvar alterações" : "Criar plano"}</button>
         </footer>
       </form>
     </div>
@@ -1103,19 +1103,19 @@ function ContactsScreen({
   return (
     <section className="space-y-5">
       <div>
-        <h2 className="text-xl font-extrabold text-[#14213d]">
+        <h2 className="text-xl font-extrabold text-[#191918]">
           {allowClients ? "Cadastro de fornecedores e clientes" : "Cadastro de fornecedores"}
         </h2>
       </div>
       <div className="flex flex-wrap gap-2" role="tablist" aria-label="Tipo de cadastro">
         {(allowClients ? (["despesa", "receita"] as Kind[]) : (["despesa"] as Kind[])).map((tabKind) => (
-          <button key={tabKind} type="button" role="tab" aria-selected={kind === tabKind} onClick={() => selectKind(tabKind)} className={`rounded-xl px-4 py-2 text-sm font-bold ${kind === tabKind ? "bg-blue-700 text-white" : "border bg-white text-slate-600"}`}>
+          <button key={tabKind} type="button" role="tab" aria-selected={kind === tabKind} onClick={() => selectKind(tabKind)} className={`rounded-xl px-4 py-2 text-sm font-bold ${kind === tabKind ? "bg-brand-700 text-white" : "border bg-white text-slate-600"}`}>
             {tabKind === "despesa" ? "Fornecedores" : "Clientes / pagadores"}
           </button>
         ))}
       </div>
       <div>
-        <h3 className="font-extrabold text-[#14213d]">{title}</h3>
+        <h3 className="font-extrabold text-[#191918]">{title}</h3>
         <p className="text-xs text-gray-500">
           {kind === "despesa"
             ? "Cadastre o fornecedor e o que ele fornece para selecioná-lo nas despesas."
@@ -1164,13 +1164,13 @@ function ContactsScreen({
         )}
         <div className="flex gap-2 md:col-start-3">
           {editing && <button type="button" onClick={reset} className="rounded-xl border px-4 py-3 text-xs font-bold">Cancelar</button>}
-          <button type="submit" disabled={!tableReady || saving || !allowedUnits.length} className="rounded-xl bg-blue-700 px-4 py-3 text-xs font-bold text-white disabled:opacity-50">
+          <button type="submit" disabled={!tableReady || saving || !allowedUnits.length} className="rounded-xl bg-brand-700 px-4 py-3 text-xs font-bold text-white disabled:opacity-50">
             {saving ? "Salvando…" : editing ? "Salvar" : "Cadastrar"}
           </button>
         </div>
       </form>
       <section className="rounded-2xl bg-white p-5 shadow-sm">
-        <h3 className="mb-3 font-extrabold text-[#14213d]">Cadastrados ({relevant.length})</h3>
+        <h3 className="mb-3 font-extrabold text-[#191918]">Cadastrados ({relevant.length})</h3>
         {relevant.length ? (
           <div className="divide-y">
             {relevant.map((contact) => (
@@ -1192,7 +1192,7 @@ function ContactsScreen({
                     setName(contact.name);
                     setProvides(contact.provides);
                     setError("");
-                  }} className="rounded-lg border px-3 py-1.5 text-xs font-bold text-blue-700 disabled:cursor-not-allowed disabled:opacity-40">
+                  }} className="rounded-lg border px-3 py-1.5 text-xs font-bold text-brand-700 disabled:cursor-not-allowed disabled:opacity-40">
                     Editar
                   </button>
                   <button type="button" disabled={!tableReady || contact.id.startsWith("legacy:")} title={!tableReady || contact.id.startsWith("legacy:") ? "Disponível após aplicar a migração do banco" : undefined} onClick={() => {
@@ -1211,7 +1211,7 @@ function ContactsScreen({
       </section>
       {archivedContacts.length > 0 && (
         <section className="rounded-2xl bg-white p-5 shadow-sm">
-          <h3 className="mb-3 font-extrabold text-[#14213d]">Arquivados ({archivedContacts.length})</h3>
+          <h3 className="mb-3 font-extrabold text-[#191918]">Arquivados ({archivedContacts.length})</h3>
           <div className="divide-y">
             {archivedContacts.map((contact) => (
               <div key={contact.id} className="flex items-center justify-between gap-3 py-3">
@@ -1219,7 +1219,7 @@ function ContactsScreen({
                   <p className="font-bold text-slate-600">{contact.name}</p>
                   <p className="text-xs text-gray-400">{contact.unit}</p>
                 </div>
-                <button type="button" disabled={archiveBusy} onClick={() => void changeArchive(contact, false)} className="rounded-lg border px-3 py-1.5 text-xs font-bold text-blue-700 disabled:opacity-50">
+                <button type="button" disabled={archiveBusy} onClick={() => void changeArchive(contact, false)} className="rounded-lg border px-3 py-1.5 text-xs font-bold text-brand-700 disabled:opacity-50">
                   Restaurar
                 </button>
               </div>
@@ -1230,7 +1230,7 @@ function ContactsScreen({
       {confirmArchive && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4" role="presentation" onClick={() => setConfirmArchive(null)}>
           <section role="dialog" aria-modal="true" aria-labelledby="archive-contact-title" className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl" onClick={(event) => event.stopPropagation()}>
-            <h3 id="archive-contact-title" className="text-lg font-extrabold text-[#14213d]">Excluir {confirmArchive.name}?</h3>
+            <h3 id="archive-contact-title" className="text-lg font-extrabold text-[#191918]">Excluir {confirmArchive.name}?</h3>
             <p className="mt-2 text-sm text-gray-600">O cadastro será arquivado e sairá das opções de novos lançamentos. Os lançamentos antigos e seus valores serão preservados.</p>
             <div className="mt-5 flex justify-end gap-2">
               <button type="button" onClick={() => setConfirmArchive(null)} className="rounded-xl border px-4 py-2 text-xs font-bold">Cancelar</button>
@@ -1559,7 +1559,7 @@ function EntryForm({
       >
         <header className="flex items-center justify-between border-b px-6 py-4">
           <div>
-            <h2 className="font-extrabold text-[#14213d]">
+            <h2 className="font-extrabold text-[#191918]">
               {editing ? "Editar" : "Novo"} lançamento
             </h2>
             <p className="text-xs text-gray-400">
@@ -1702,7 +1702,7 @@ function EntryForm({
                     setContactPickerOpen(true);
                   }}
                   placeholder={kind === "despesa" ? "Selecione ou digite o fornecedor" : "Selecione ou digite o cliente"}
-                  className="w-full rounded-xl border bg-gray-50 p-3 pr-10 text-sm font-normal focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+                  className="w-full rounded-xl border bg-gray-50 p-3 pr-10 text-sm font-normal focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-100"
                 />
                 <button type="button" aria-label="Mostrar contatos cadastrados" aria-expanded={contactPickerOpen} onClick={() => {
                   setContactSearch("");
@@ -1714,7 +1714,7 @@ function EntryForm({
               {contactPickerOpen && (
                 <div id="entry-counterparty-options" role="listbox" className="absolute left-0 right-0 top-full z-[60] mt-1 max-h-52 overflow-y-auto rounded-xl border border-slate-200 bg-white p-1.5 text-left shadow-xl">
                   {matchingContacts.length ? matchingContacts.map((contact, index) => (
-                    <button key={contact.id} type="button" role="option" aria-selected={contactActiveIndex === index} onClick={() => chooseContact(contact)} className={`flex w-full items-center justify-between gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-semibold ${contactActiveIndex === index ? "bg-blue-50 text-blue-800" : "text-slate-800 hover:bg-slate-50"}`}>
+                    <button key={contact.id} type="button" role="option" aria-selected={contactActiveIndex === index} onClick={() => chooseContact(contact)} className={`flex w-full items-center justify-between gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-semibold ${contactActiveIndex === index ? "bg-brand-50 text-brand-800" : "text-slate-800 hover:bg-slate-50"}`}>
                       <span className="truncate">{contact.name}</span>
                       <span className="shrink-0 text-[11px] font-normal text-slate-500">{contact.unit}</span>
                     </button>
@@ -1753,7 +1753,7 @@ function EntryForm({
               {existingAttachments.map((path) => (
                 <div key={path} className="flex items-center gap-2 rounded-xl border bg-gray-50 p-2 text-xs font-normal">
                   <Paperclip className="h-4 w-4 shrink-0 text-slate-500" />
-                  <button type="button" onClick={() => void openAttachment(path)} className="flex-1 truncate text-left text-blue-700 hover:underline">
+                  <button type="button" onClick={() => void openAttachment(path)} className="flex-1 truncate text-left text-brand-700 hover:underline">
                     {attachmentName(path)}
                   </button>
                   <button
@@ -1801,7 +1801,7 @@ function EntryForm({
                   setDragging(false);
                   void addFiles(Array.from(event.dataTransfer.files));
                 }}
-                className={`flex cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed p-5 text-xs font-bold transition ${dragging ? "border-blue-500 bg-blue-50 text-blue-700" : "border-slate-300 bg-white text-slate-600 hover:border-blue-300 hover:text-blue-700"}`}
+                className={`flex cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed p-5 text-xs font-bold transition ${dragging ? "border-brand-500 bg-brand-50 text-brand-700" : "border-slate-300 bg-white text-slate-600 hover:border-brand-300 hover:text-brand-700"}`}
               >
                 <Plus className="h-5 w-5" />
                 {dragging ? "Solte o arquivo para anexar" : "Arraste o arquivo aqui ou clique para escolher"}
@@ -1900,7 +1900,7 @@ function EntryForm({
               Ao salvar, este lançamento será substituído pelas parcelas abaixo (os anexos são mantidos).
             </p>
           )}
-          <div className="grid gap-3 rounded-xl border border-blue-100 bg-blue-50/60 p-4 sm:grid-cols-2">
+          <div className="grid gap-3 rounded-xl border border-brand-100 bg-brand-50/60 p-4 sm:grid-cols-2">
             <label className="flex items-center gap-2 text-sm font-bold">
               <input
                 type="checkbox"
@@ -1910,12 +1910,12 @@ function EntryForm({
                   if (e.target.checked) setInstallments(1);
                 }}
               />
-              <Repeat2 className="h-4 w-4 text-blue-600" />
+              <Repeat2 className="h-4 w-4 text-brand-600" />
               Recorrente mensal
             </label>
             {!recurrence && !sameMonthInstallments && (!editing || standaloneEdit) && (
               <label className="flex items-center gap-2 text-sm font-bold">
-                <CalendarClock className="h-4 w-4 text-blue-600" />
+                <CalendarClock className="h-4 w-4 text-brand-600" />
                 Parcelar em meses
                 <input
                   min="1"
@@ -1930,7 +1930,7 @@ function EntryForm({
               </label>
             )}
             {editing?.seriesId && (
-              <label className="col-span-full flex gap-3 text-xs font-bold text-blue-800">
+              <label className="col-span-full flex gap-3 text-xs font-bold text-brand-800">
                 Alterar:{" "}
                 <span>
                   <input
@@ -1951,7 +1951,7 @@ function EntryForm({
               </label>
             )}
             {(!editing || standaloneEdit) && (
-              <div className="col-span-full border-t border-blue-100 pt-3">
+              <div className="col-span-full border-t border-brand-100 pt-3">
                 <label className="flex items-center gap-2 text-sm font-bold">
                   <input
                     type="checkbox"
@@ -1973,7 +1973,7 @@ function EntryForm({
                   />
                   Dividir dentro de cada mês
                 </label>
-                <p className="mt-1 text-xs text-blue-700">
+                <p className="mt-1 text-xs text-brand-700">
                   Ideal para adiantamento e saldo de salário, ou pagamentos em
                   2x e 3x no mesmo mês.
                 </p>
@@ -2013,7 +2013,7 @@ function EntryForm({
                         ),
                       )
                     }
-                    className="text-xs font-bold text-blue-700 hover:text-blue-900"
+                    className="text-xs font-bold text-brand-700 hover:text-brand-900"
                   >
                     Dividir valor igualmente
                   </button>
@@ -2023,7 +2023,7 @@ function EntryForm({
                     key={index}
                     className="grid gap-2 sm:grid-cols-[auto_1fr_1fr] sm:items-end"
                   >
-                    <span className="pb-3 text-xs font-extrabold text-blue-700">
+                    <span className="pb-3 text-xs font-extrabold text-brand-700">
                       {index + 1}ª parcela
                     </span>
                     <label className="text-[11px] font-bold text-gray-500">
@@ -2061,7 +2061,7 @@ function EntryForm({
                     </label>
                   </div>
                 ))}
-                <p className="text-xs font-bold text-blue-800">
+                <p className="text-xs font-bold text-brand-800">
                   Total das parcelas:{" "}
                   {fmt(
                     sameMonthPartsState.reduce(
@@ -2074,18 +2074,18 @@ function EntryForm({
               </div>
             )}
             {recurrence && !sameMonthInstallments && (
-              <p className="col-span-full text-xs text-blue-700">
+              <p className="col-span-full text-xs text-brand-700">
                 O valor será repetido mensalmente, sem divisão.
               </p>
             )}
             {recurrence && sameMonthInstallments && (
-              <p className="col-span-full text-xs text-blue-700">
+              <p className="col-span-full text-xs text-brand-700">
                 Cada parcela será repetida todos os meses, nas datas e valores
                 definidos acima.
               </p>
             )}
             {!recurrence && installments > 1 && (
-              <p className="col-span-full text-xs text-blue-700">
+              <p className="col-span-full text-xs text-brand-700">
                 Lançamento com fim: {installments} parcelas mensais de{" "}
                 {fmt((parseMoney(amount) || 0) / installments)}.
               </p>
@@ -2102,7 +2102,7 @@ function EntryForm({
           </button>
           <button
             disabled={saving}
-            className="flex-1 rounded-xl bg-blue-700 py-2.5 text-sm font-bold text-white disabled:opacity-60"
+            className="flex-1 rounded-xl bg-brand-700 py-2.5 text-sm font-bold text-white disabled:opacity-60"
           >
             {saving ? "Salvando no banco..." : "Salvar"}
           </button>
@@ -2302,7 +2302,7 @@ function UsersAdmin({
               {centers.map((unit) => (
                 <label
                   key={unit.name}
-                  className={`flex cursor-pointer items-center gap-2 rounded-xl border p-3 text-xs font-bold ${selectedUnits.includes(unit.name) ? "border-blue-300 bg-blue-50 text-blue-800" : "bg-white text-gray-600"}`}
+                  className={`flex cursor-pointer items-center gap-2 rounded-xl border p-3 text-xs font-bold ${selectedUnits.includes(unit.name) ? "border-brand-300 bg-brand-50 text-brand-800" : "bg-white text-gray-600"}`}
                 >
                   <input
                     type="checkbox"
@@ -2336,7 +2336,7 @@ function UsersAdmin({
           )}
           <button
             disabled={busy}
-            className="w-full rounded-xl bg-blue-700 py-3 text-sm font-bold text-white disabled:opacity-60"
+            className="w-full rounded-xl bg-brand-700 py-3 text-sm font-bold text-white disabled:opacity-60"
           >
             {busy ? "Criando..." : "Criar acesso"}
           </button>
@@ -2366,7 +2366,7 @@ function UsersAdmin({
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
                   {user.role === "master" ? (
-                    <span className="rounded-full bg-blue-700 px-2 py-1 text-xs font-bold text-white">
+                    <span className="rounded-full bg-brand-700 px-2 py-1 text-xs font-bold text-white">
                       Todos os centros
                     </span>
                   ) : (
@@ -2374,7 +2374,7 @@ function UsersAdmin({
                       {user.units.map((unit) => (
                         <span
                           key={unit}
-                          className="rounded-full bg-blue-50 px-2 py-1 text-xs font-bold text-blue-700"
+                          className="rounded-full bg-brand-50 px-2 py-1 text-xs font-bold text-brand-700"
                         >
                           {unit}
                         </span>
@@ -2391,7 +2391,7 @@ function UsersAdmin({
                       )}
                       <button
                         onClick={() => startEditingPermissions(user)}
-                        className="rounded-lg border border-blue-200 px-2.5 py-1.5 text-xs font-bold text-blue-700"
+                        className="rounded-lg border border-brand-200 px-2.5 py-1.5 text-xs font-bold text-brand-700"
                       >
                         Editar permissões
                       </button>
@@ -2414,7 +2414,7 @@ function UsersAdmin({
                 </div>
               </div>
               {user.role !== "master" && editingUserId === user.id && (
-                <div className="mt-4 rounded-xl border border-blue-100 bg-blue-50/60 p-3">
+                <div className="mt-4 rounded-xl border border-brand-100 bg-brand-50/60 p-3">
                   <p className="text-xs font-extrabold text-slate-800">
                     Centros de custo que {user.name} pode visualizar e movimentar
                   </p>
@@ -2483,7 +2483,7 @@ function UsersAdmin({
                     <button
                       disabled={savingPermissions || !editUnits.length}
                       onClick={() => void savePermissions(user)}
-                      className="rounded-lg bg-blue-700 px-3 py-2 text-xs font-bold text-white disabled:opacity-60"
+                      className="rounded-lg bg-brand-700 px-3 py-2 text-xs font-bold text-white disabled:opacity-60"
                     >
                       {savingPermissions ? "Salvando..." : "Salvar permissões"}
                     </button>
@@ -2564,7 +2564,7 @@ function Entries({
               onKeyDown={(event) => {
                 if (open && event.key === "Enter" && event.target === event.currentTarget) open(x);
               }}
-              className={`flex flex-wrap items-center gap-3 py-3 ${open ? "-mx-2 cursor-pointer rounded-xl px-2 transition hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600" : ""}`}
+              className={`flex flex-wrap items-center gap-3 py-3 ${open ? "-mx-2 cursor-pointer rounded-xl px-2 transition hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-600" : ""}`}
             >
               <Icon category={c} />
               <div className="min-w-0 flex-1">
@@ -2592,7 +2592,7 @@ function Entries({
                 {(x.pix || x.notes) && (
                   <div className="mt-1 space-y-0.5 text-xs">
                     {x.pix && (
-                      <p className="truncate font-bold text-blue-700">
+                      <p className="truncate font-bold text-brand-700">
                         Chave PIX: {x.pix}
                       </p>
                     )}
@@ -2610,7 +2610,7 @@ function Entries({
                         key={path}
                         type="button"
                         onClick={() => void openAttachment(path)}
-                        className="inline-flex max-w-[180px] items-center gap-1 rounded-lg border border-blue-200 bg-blue-50 px-2 py-1 text-[11px] font-bold text-blue-700 hover:bg-blue-100"
+                        className="inline-flex max-w-[180px] items-center gap-1 rounded-lg border border-brand-200 bg-brand-50 px-2 py-1 text-[11px] font-bold text-brand-700 hover:bg-brand-100"
                         title={attachmentLabel(path)}
                       >
                         <Paperclip className="h-3 w-3 shrink-0" />
@@ -2707,7 +2707,7 @@ function Breakdown({
   const max = rows.reduce((s, [, v]) => s + v, 0);
   return (
     <section className="rounded-2xl bg-white p-5 shadow-sm">
-      <h2 className="mb-4 font-extrabold text-[#14213d]">
+      <h2 className="mb-4 font-extrabold text-[#191918]">
         {kind === "receita" ? "Receitas" : "Despesas"} por categoria
       </h2>
       {rows.length ? (
@@ -2819,7 +2819,7 @@ function CounterpartyOverview({
     <section className="rounded-2xl bg-white p-5 shadow-sm">
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div>
-          <h2 className="font-extrabold text-[#14213d]">{expense ? "Fornecedores" : "Clientes / pagadores"}</h2>
+          <h2 className="font-extrabold text-[#191918]">{expense ? "Fornecedores" : "Clientes / pagadores"}</h2>
           <p className="mt-1 text-xs text-gray-400">Movimentação identificada no mês selecionado.</p>
         </div>
         <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-bold text-slate-600">{activeCount} cadastrados</span>
@@ -2869,7 +2869,7 @@ function CounterpartyReportPanel({
   const drill = (title: string, items: Entry[]) => { if (onDrill) onDrill(title, items); };
   return (
     <section className="rounded-2xl bg-white p-5 shadow-sm">
-      <h2 className="font-extrabold text-[#14213d]">{expense ? "Relatório por fornecedor" : "Relatório por cliente / pagador"}</h2>
+      <h2 className="font-extrabold text-[#191918]">{expense ? "Relatório por fornecedor" : "Relatório por cliente / pagador"}</h2>
       <p className="mt-1 text-xs text-slate-400">Valores dos lançamentos no período e filtros selecionados.</p>
       <div className="mt-4 flex flex-wrap gap-3 text-xs">
         <span className="rounded-lg bg-slate-50 px-3 py-2">{moved.length} com movimentação</span>
@@ -3220,12 +3220,12 @@ function Reports({
           [
             "Resultado projetado",
             income - expense,
-            income - expense >= 0 ? "text-blue-700" : "text-red-600",
+            income - expense >= 0 ? "text-brand-700" : "text-red-600",
             filtered,
           ],
-          ["Resultado realizado", realizedIncome - realizedExpense, realizedIncome >= realizedExpense ? "text-blue-700" : "text-red-600", pick((e) => e.status === "realizado")],
+          ["Resultado realizado", realizedIncome - realizedExpense, realizedIncome >= realizedExpense ? "text-brand-700" : "text-red-600", pick((e) => e.status === "realizado")],
           ["A pagar", pendingPay, "text-orange-600", pick((e) => e.kind === "despesa" && e.status === "previsto")],
-          ["A receber", pendingReceive, "text-blue-700", pick((e) => e.kind === "receita" && e.status === "previsto")],
+          ["A receber", pendingReceive, "text-brand-700", pick((e) => e.kind === "receita" && e.status === "previsto")],
           ["Pagar vencido", overduePay, "text-red-600", pick((e) => e.kind === "despesa" && e.status === "previsto" && e.date < todayKey)],
           ["Receber vencido", overdueReceive, "text-orange-600", pick((e) => e.kind === "receita" && e.status === "previsto" && e.date < todayKey)],
         ] as [string, number, string, Entry[]][])
@@ -3235,20 +3235,20 @@ function Reports({
             key={label}
             type="button"
             onClick={() => openDrill(label, items)}
-            className="rounded-2xl bg-white p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600"
+            className="rounded-2xl bg-white p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-600"
           >
             <p className="text-xs font-bold text-gray-400">{label}</p>
             <p className={`mt-2 text-2xl font-extrabold ${color}`}>
               {fmt(value)}
             </p>
-            <p className="mt-1 text-[11px] font-semibold text-blue-700">{items.length} lançamento(s) →</p>
+            <p className="mt-1 text-[11px] font-semibold text-brand-700">{items.length} lançamento(s) →</p>
           </button>
         ))}
       </div>
       <section className="rounded-2xl bg-white p-5 shadow-sm">
         <div className="flex flex-wrap items-start justify-between gap-2">
           <div>
-            <h2 className="font-extrabold text-[#14213d]">Fluxo financeiro no período</h2>
+            <h2 className="font-extrabold text-[#191918]">Fluxo financeiro no período</h2>
             <p className="mt-1 text-xs text-slate-400">
               {shortPeriod ? "Visão semanal" : "Visão mensal"} · Passe o mouse nas barras para ver os valores.
             </p>
@@ -3283,7 +3283,7 @@ function Reports({
           ...(incomeVisible ? ([["Receitas por categoria", incomeDetails, income]] as const) : []),
         ] as const).map(([title, rows, totalValue]) => (
           <section key={title} className="rounded-2xl bg-white p-5 shadow-sm">
-            <h2 className="font-extrabold text-[#14213d]">{title}</h2>
+            <h2 className="font-extrabold text-[#191918]">{title}</h2>
             <p className="mt-1 text-xs text-slate-400">Cor do plano de contas · Centro e percentual na legenda.</p>
             {rows.length ? (
               <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-center">
@@ -3318,7 +3318,7 @@ function Reports({
         ))}
       </div>
       <section className="rounded-2xl bg-white p-5 shadow-sm">
-        <h2 className="font-extrabold text-[#14213d]">Detalhamento por categoria</h2>
+        <h2 className="font-extrabold text-[#191918]">Detalhamento por categoria</h2>
         <p className="mt-1 text-xs text-slate-400">Total, situação, vencidos e quantidade de lançamentos no período.</p>
         {categoryDetails.length ? (
           <div className="mt-4 overflow-x-auto">
@@ -3350,7 +3350,7 @@ function Reports({
       </section>
       <div className="grid gap-5 xl:grid-cols-2">
         <section className="rounded-2xl bg-white p-5 shadow-sm">
-          <h2 className="font-extrabold text-[#14213d]">Maiores categorias de despesa</h2>
+          <h2 className="font-extrabold text-[#191918]">Maiores categorias de despesa</h2>
           <p className="mt-1 text-xs text-slate-400">Comparação das categorias com maior peso no período.</p>
           {expenseDetails.length ? (
             <>
@@ -3386,7 +3386,7 @@ function Reports({
           ) : <p className="py-10 text-center text-sm text-slate-400">Sem despesas no período.</p>}
         </section>
         <section className="rounded-2xl bg-white p-5 shadow-sm">
-          <h2 className="font-extrabold text-[#14213d]">Maiores despesas individuais</h2>
+          <h2 className="font-extrabold text-[#191918]">Maiores despesas individuais</h2>
           <p className="mt-1 text-xs text-slate-400">Lançamentos de maior valor, inclusive parcelas e recorrências.</p>
           <div className="mt-4 divide-y divide-slate-100">
             {largestExpenses.map((entry) => (
@@ -3414,7 +3414,7 @@ function Reports({
       </div>
       {kind !== "receita" && (
         <section className="rounded-2xl bg-white p-5 shadow-sm">
-          <h2 className="font-extrabold text-[#14213d]">Juros e atraso</h2>
+          <h2 className="font-extrabold text-[#191918]">Juros e atraso</h2>
           <p className="mt-1 text-xs text-slate-400">Despesas já pagas no período. Clique nos cards para ver o detalhamento.</p>
           <div className="mt-4 grid gap-3 sm:grid-cols-3">
             <button
@@ -3424,7 +3424,7 @@ function Reports({
             >
               <p className="text-xs font-bold text-gray-500">Juros pagos</p>
               <p className="mt-2 text-2xl font-extrabold text-red-600">{fmt(totalJuros)}</p>
-              <p className="mt-1 text-[11px] font-semibold text-blue-700">{jurosEntries.length} despesa(s) · Ver →</p>
+              <p className="mt-1 text-[11px] font-semibold text-brand-700">{jurosEntries.length} despesa(s) · Ver →</p>
             </button>
             <button
               type="button"
@@ -3433,11 +3433,11 @@ function Reports({
             >
               <p className="text-xs font-bold text-gray-500">Pagas em atraso</p>
               <p className="mt-2 text-2xl font-extrabold text-orange-600">{lateExpenses.length}</p>
-              <p className="mt-1 text-[11px] font-semibold text-blue-700">Ver lançamentos →</p>
+              <p className="mt-1 text-[11px] font-semibold text-brand-700">Ver lançamentos →</p>
             </button>
             <div className="rounded-xl border p-4">
               <p className="text-xs font-bold text-gray-500">Atraso médio</p>
-              <p className="mt-2 text-2xl font-extrabold text-[#14213d]">{avgLateDays} dia(s)</p>
+              <p className="mt-2 text-2xl font-extrabold text-[#191918]">{avgLateDays} dia(s)</p>
               <p className="mt-1 text-[11px] text-slate-400">{totalLateDays} dia(s) no total</p>
             </div>
           </div>
@@ -3445,7 +3445,7 @@ function Reports({
       )}
       {incomeVisible && (
       <section className="rounded-2xl bg-white p-5 shadow-sm">
-        <h2 className="font-extrabold text-[#14213d]">
+        <h2 className="font-extrabold text-[#191918]">
           Movimento realizado por conta no período
         </h2>
         <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
@@ -3454,12 +3454,12 @@ function Reports({
               key={`${item.unit}:${item.name}`}
               type="button"
               onClick={() => openDrill(`${item.name} · ${item.unit}`, pick((e) => e.account === item.name && e.unit === item.unit && e.status === "realizado"))}
-              className="rounded-xl border p-4 text-left transition hover:border-blue-300 hover:shadow-sm"
+              className="rounded-xl border p-4 text-left transition hover:border-brand-300 hover:shadow-sm"
             >
               <p className="font-bold text-slate-800">{item.name}</p>
               <p className="text-xs text-gray-400">{item.unit}</p>
               <p
-                className={`mt-3 text-lg font-extrabold ${item.balance >= 0 ? "text-blue-700" : "text-red-600"}`}
+                className={`mt-3 text-lg font-extrabold ${item.balance >= 0 ? "text-brand-700" : "text-red-600"}`}
               >
                 {fmt(item.balance)}
               </p>
@@ -3478,7 +3478,7 @@ function Reports({
           >
             <header className="flex items-start justify-between border-b px-6 py-4">
               <div className="min-w-0">
-                <h2 className="truncate font-extrabold text-[#14213d]">{drill.title}</h2>
+                <h2 className="truncate font-extrabold text-[#191918]">{drill.title}</h2>
                 <p className="mt-0.5 text-xs text-slate-500">
                   {drill.items.length} lançamento(s) · {dateLabel(from)} a {dateLabel(to)}
                 </p>
@@ -3524,7 +3524,7 @@ function Reports({
                                 window.alert(error instanceof Error ? error.message : "Não foi possível abrir o arquivo.");
                               }
                             }}
-                            className="inline-flex max-w-[160px] items-center gap-1 rounded-lg border border-blue-200 bg-blue-50 px-2 py-0.5 text-[11px] font-bold text-blue-700 hover:bg-blue-100"
+                            className="inline-flex max-w-[160px] items-center gap-1 rounded-lg border border-brand-200 bg-brand-50 px-2 py-0.5 text-[11px] font-bold text-brand-700 hover:bg-brand-100"
                           >
                             <Paperclip className="h-3 w-3 shrink-0" />
                             <span className="truncate">{(path.split("/").pop() || path).replace(/^\d+-/, "")}</span>
@@ -4028,15 +4028,15 @@ function App() {
   };
   if (!authReady)
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#f2f4f8] p-6 text-center">
+      <main className="flex min-h-screen items-center justify-center bg-[#f5f2eb] p-6 text-center">
         <div className="rounded-2xl bg-white px-8 py-7 shadow-sm">
           <img
-            src="/sistema-financeiro/fincore-logo-transparent.png"
-            alt="Fincore"
+            src={`${import.meta.env.BASE_URL}fincore-perino-logo.svg`}
+            alt="FinCore Perino"
             className="mx-auto w-36"
           />
           <div
-            className="mx-auto mt-6 h-7 w-7 animate-spin rounded-full border-[3px] border-blue-100 border-t-blue-700"
+            className="mx-auto mt-6 h-7 w-7 animate-spin rounded-full border-[3px] border-brand-100 border-t-brand-700"
             aria-label="Carregando"
           />
         </div>
@@ -4045,11 +4045,11 @@ function App() {
   if (!currentUser) return <Login onLogin={setCurrentUser} />;
   if (!dataReady || dataError)
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#f2f4f8] p-6 text-center">
+      <main className="flex min-h-screen items-center justify-center bg-[#f5f2eb] p-6 text-center">
         <div className="rounded-2xl bg-white px-8 py-7 shadow-sm">
           <img
-            src="/sistema-financeiro/fincore-logo-transparent.png"
-            alt="Fincore"
+            src={`${import.meta.env.BASE_URL}fincore-perino-logo.svg`}
+            alt="FinCore Perino"
             className="mx-auto w-36"
           />
           {dataError ? (
@@ -4058,7 +4058,7 @@ function App() {
             </p>
           ) : (
             <div
-              className="mx-auto mt-6 h-7 w-7 animate-spin rounded-full border-[3px] border-blue-100 border-t-blue-700"
+              className="mx-auto mt-6 h-7 w-7 animate-spin rounded-full border-[3px] border-brand-100 border-t-brand-700"
               aria-label="Carregando"
             />
           )}
@@ -4503,19 +4503,19 @@ function App() {
       { id: "usuarios", text: "Usuários", Icon: Menu },
     ];
   return (
-    <div className="flex h-screen overflow-hidden bg-[#f2f4f8]">
+    <div className="flex h-screen overflow-hidden bg-[#f5f2eb]">
       <aside
-        className={`fixed z-30 flex h-full w-64 shrink-0 flex-col bg-[#14213d] text-white transition-transform lg:relative ${menu ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
+        className={`fixed z-30 flex h-full w-64 shrink-0 flex-col bg-[#191918] text-white transition-transform lg:relative ${menu ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
       >
         <div className="flex items-center justify-between border-b border-white/10 px-4 py-6">
           <div className="min-w-0 flex-1 text-center">
             <img
-              src="/sistema-financeiro/fincore-logo-transparent.png"
-              alt="Fincore"
-              className="mx-auto h-14 w-40 object-contain brightness-0 invert"
+              src={`${import.meta.env.BASE_URL}fincore-perino-logo.svg`}
+              alt="FinCore Perino"
+              className="mx-auto h-14 w-40 object-contain"
             />
-            <p className="mt-1.5 text-xs font-medium text-blue-200/70">
-              Gestão financeira
+            <p className="mt-1.5 text-xs font-medium text-brand-200/70">
+              PERINO · Gestão financeira
             </p>
           </div>
           <button className="lg:hidden" onClick={() => setMenu(false)}>
@@ -4540,7 +4540,7 @@ function App() {
                   }
                   setMenu(false);
                 }}
-                className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-bold ${screen === x.id ? "bg-blue-600" : "text-white/60"}`}
+                className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-bold ${screen === x.id ? "bg-[#d4af55] text-[#191918] shadow-sm" : "text-white/65 hover:bg-white/5 hover:text-[#e8cd88]"}`}
               >
                 <x.Icon className="h-4 w-4 shrink-0" />
                 <span className="truncate whitespace-nowrap text-left">{x.text}</span>
@@ -4551,12 +4551,12 @@ function App() {
           <p className="truncate text-sm font-bold text-white">
             {currentUser.name}
           </p>
-          <p className="mb-3 truncate text-[11px] text-blue-200/70">
+          <p className="mb-3 truncate text-[11px] text-brand-200/70">
             {currentUser.email}
           </p>
           <button
             onClick={logout}
-            className="w-full rounded-lg border border-white/15 px-2.5 py-2 text-xs font-bold text-blue-100 hover:bg-white/10"
+            className="w-full rounded-lg border border-white/15 px-2.5 py-2 text-xs font-bold text-brand-100 hover:bg-white/10"
           >
             Sair da conta
           </button>
@@ -4569,7 +4569,7 @@ function App() {
               <Menu />
             </button>
             <div>
-              <h1 className="font-extrabold text-[#14213d]">
+              <h1 className="font-extrabold text-[#191918]">
                 {screen === "dashboard"
                   ? "Dashboard Financeiro"
                   : screen === "contas"
@@ -4616,7 +4616,7 @@ function App() {
                 onClick={() => setNotificationsOpen((open) => !open)}
                 aria-label={`Notificações${pending.length ? `: ${pending.length} pendências` : ""}`}
                 aria-expanded={notificationsOpen}
-                className="relative rounded-lg p-2 text-gray-400 transition hover:bg-slate-100 hover:text-[#14213d]"
+                className="relative rounded-lg p-2 text-gray-400 transition hover:bg-slate-100 hover:text-[#191918]"
               >
                 <Bell className="h-5 w-5" />
               </button>
@@ -4629,7 +4629,7 @@ function App() {
                 <section className="absolute right-0 z-40 mt-2 w-[min(24rem,calc(100vw-2.5rem))] overflow-hidden rounded-2xl border border-slate-200 bg-white text-left shadow-xl">
                   <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3">
                     <div>
-                      <h2 className="text-sm font-extrabold text-[#14213d]">
+                      <h2 className="text-sm font-extrabold text-[#191918]">
                         Pendências financeiras
                       </h2>
                       <p className="text-[11px] text-slate-400">
@@ -4640,7 +4640,7 @@ function App() {
                       <button
                         type="button"
                         onClick={() => openOverdue("todos")}
-                        className="text-xs font-bold text-blue-700 hover:text-blue-900"
+                        className="text-xs font-bold text-brand-700 hover:text-brand-900"
                       >
                         Ver atrasadas
                       </button>
@@ -4704,7 +4704,7 @@ function App() {
             <>
               <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <h2 className="font-extrabold text-[#14213d]">
+                  <h2 className="font-extrabold text-[#191918]">
                     Visão mensal
                   </h2>
                   <p className="text-xs text-gray-400">
@@ -4731,7 +4731,7 @@ function App() {
                   { title: "Receitas recebidas", value: totals.income, Icon: TrendingUp, style: "text-emerald-600 bg-emerald-50", filter: "recebidas", today: false },
                   { title: "Despesas pagas", value: totals.expense, Icon: TrendingDown, style: "text-red-600 bg-red-50", filter: "pagas", today: false },
                   { title: "A pagar", value: totals.pay, Icon: CreditCard, style: "text-orange-600 bg-orange-50", filter: "pagar", today: false },
-                  { title: "A receber", value: totals.receive, Icon: Wallet, style: "text-blue-600 bg-blue-50", filter: "receber", today: false },
+                  { title: "A receber", value: totals.receive, Icon: Wallet, style: "text-brand-600 bg-brand-50", filter: "receber", today: false },
                 ] as const)
                   .filter((card) => isMaster || (card.filter !== "recebidas" && card.filter !== "receber"))
                   .map(({ title, value, Icon: CardIcon, style, filter: targetFilter, today: isToday }) => {
@@ -4753,7 +4753,7 @@ function App() {
                         setScreen("lancamentos");
                       }}
                       aria-label={`${title}: ${fmt(value)}. Ver lançamentos`}
-                      className="rounded-2xl bg-white p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600"
+                      className="rounded-2xl bg-white p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-600"
                     >
                       <div
                         className={`mb-4 flex h-10 w-10 items-center justify-center rounded-xl ${style}`}
@@ -4763,10 +4763,10 @@ function App() {
                       <p className="text-xs font-bold text-gray-400">
                         {title}
                       </p>
-                      <p className="mt-1 text-2xl font-extrabold text-[#14213d]">
+                      <p className="mt-1 text-2xl font-extrabold text-[#191918]">
                         {fmt(value)}
                       </p>
-                      <p className="mt-2 text-[11px] font-semibold text-blue-700">
+                      <p className="mt-2 text-[11px] font-semibold text-brand-700">
                         {isToday
                           ? payToday.length > 0
                             ? `${payToday.length} conta(s) · Ver →`
@@ -4780,7 +4780,7 @@ function App() {
               <section className="mt-5 rounded-2xl border border-red-100 bg-white p-5 shadow-sm">
                 <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
                   <div>
-                    <h2 className="font-extrabold text-[#14213d]">
+                    <h2 className="font-extrabold text-[#191918]">
                       Contas em atraso
                     </h2>
                     <p className="text-xs text-gray-400">
@@ -4800,7 +4800,7 @@ function App() {
                     <span className="text-xs font-bold text-red-600">
                       Contas a pagar atrasadas
                     </span>
-                    <b className="mt-1 block text-xl font-extrabold text-[#14213d]">
+                    <b className="mt-1 block text-xl font-extrabold text-[#191918]">
                       {fmt(overduePay.reduce((sum, entry) => sum + entry.amount, 0))}
                     </b>
                     <span className="mt-1 block text-[11px] font-medium text-red-700">
@@ -4816,7 +4816,7 @@ function App() {
                     <span className="text-xs font-bold text-orange-600">
                       Contas a receber atrasadas
                     </span>
-                    <b className="mt-1 block text-xl font-extrabold text-[#14213d]">
+                    <b className="mt-1 block text-xl font-extrabold text-[#191918]">
                       {fmt(overdueReceive.reduce((sum, entry) => sum + entry.amount, 0))}
                     </b>
                     <span className="mt-1 block text-[11px] font-medium text-orange-700">
@@ -4859,7 +4859,7 @@ function App() {
                               Conta manual
                             </p>
                           </div>
-                          <p className="font-extrabold text-blue-600">
+                          <p className="font-extrabold text-brand-600">
                             {fmt(balance(account.name))}
                           </p>
                         </div>
@@ -4901,7 +4901,7 @@ function App() {
                           {u.initials}
                         </div>
                         <div>
-                          <h3 className="font-extrabold text-[#14213d]">
+                          <h3 className="font-extrabold text-[#191918]">
                             {u.name}
                           </h3>
                           <p className="text-[11px] text-gray-500">
@@ -4939,7 +4939,7 @@ function App() {
                         {isMaster && (
                         <p>
                           A receber
-                          <b className="block text-blue-600">
+                          <b className="block text-brand-600">
                             {fmt(
                               d
                                 .filter(
@@ -4976,7 +4976,7 @@ function App() {
                 {isMaster && <CounterpartyOverview kind="receita" entries={current} contacts={contacts.filter((contact) => allowedUnits.some((allowed) => allowed.name === contact.unit))} todayKey={today} />}
               </div>
               <section className="mt-5 rounded-2xl bg-white p-5 shadow-sm">
-                <h2 className="font-extrabold text-[#14213d]">
+                <h2 className="font-extrabold text-[#191918]">
                   Lançamentos de {labelMonth(month)}
                 </h2>
                 <p className="mb-4 text-xs text-gray-400">
@@ -5023,7 +5023,7 @@ function App() {
                 {currentUser.role === "master" && (
                   <button
                     onClick={addAccount}
-                    className="rounded-xl bg-blue-700 px-3 py-2 text-xs font-bold text-white"
+                    className="rounded-xl bg-brand-700 px-3 py-2 text-xs font-bold text-white"
                   >
                     + Nova conta
                   </button>
@@ -5050,7 +5050,7 @@ function App() {
                             Centro de custo
                           </p>
                         </div>
-                        <p className="text-lg font-extrabold text-blue-600">
+                        <p className="text-lg font-extrabold text-brand-600">
                           {fmt(balance(account.name))}
                         </p>
                       </div>
@@ -5137,7 +5137,7 @@ function App() {
             <section className="rounded-2xl bg-white p-5 shadow-sm">
               <div className="mb-5 flex flex-wrap justify-between gap-3">
                 <div>
-                  <h2 className="font-extrabold text-[#14213d]">
+                  <h2 className="font-extrabold text-[#191918]">
                     Plano de contas por centro de custo
                   </h2>
                   <p className="text-xs text-gray-400">
@@ -5151,7 +5151,7 @@ function App() {
                       onClick={() => setCenterModal(true)}
                       disabled={!centerTableReady}
                       title={!centerTableReady ? "Aplique a migração de centros de custo no banco" : undefined}
-                      className="flex items-center gap-1 rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-xs font-bold text-blue-700 disabled:opacity-50"
+                      className="flex items-center gap-1 rounded-xl border border-brand-200 bg-brand-50 px-3 py-2 text-xs font-bold text-brand-700 disabled:opacity-50"
                     >
                       <Plus className="h-4 w-4" />
                       Novo plano / centro
@@ -5159,7 +5159,7 @@ function App() {
                   )}
                   <button
                     onClick={() => setCategoryModal(true)}
-                    className="flex items-center gap-1 rounded-xl bg-blue-700 px-3 py-2 text-xs font-bold text-white"
+                    className="flex items-center gap-1 rounded-xl bg-brand-700 px-3 py-2 text-xs font-bold text-white"
                   >
                     <Plus className="h-4 w-4" />
                     Nova categoria
@@ -5179,7 +5179,7 @@ function App() {
                         {u.initials}
                       </div>
                       <div className="min-w-0 flex-1">
-                        <h3 className="font-extrabold text-[#14213d]">
+                        <h3 className="font-extrabold text-[#191918]">
                           {u.name}
                         </h3>
                         <p className="text-[11px] text-gray-500">
@@ -5190,7 +5190,7 @@ function App() {
                         <div className="flex shrink-0 gap-1 text-xs font-bold">
                           <button
                             onClick={() => setEditingCenter(u)}
-                            className="rounded px-1.5 py-1 text-blue-600 hover:bg-blue-50"
+                            className="rounded px-1.5 py-1 text-brand-600 hover:bg-brand-50"
                             aria-label={`Editar plano ${u.name}`}
                           >
                             Editar
@@ -5224,7 +5224,7 @@ function App() {
                                 <span>{c.name}</span>
                                 <button
                                   onClick={() => setEditingCategory(c)}
-                                  className="text-blue-600"
+                                  className="text-brand-600"
                                 >
                                   Editar
                                 </button>
@@ -5253,7 +5253,7 @@ function App() {
             <section className="rounded-2xl bg-white p-5 shadow-sm">
               <div className="mb-5 flex flex-wrap justify-between gap-3">
                 <div>
-                  <h2 className="font-extrabold text-[#14213d]">
+                  <h2 className="font-extrabold text-[#191918]">
                     {entryFilter === "pagar"
                       ? "Contas a pagar"
                       : entryFilter === "receber"
@@ -5319,7 +5319,7 @@ function App() {
                     )}
                   </div>
                   {searchText && (
-                    <p className="text-[11px] font-semibold text-blue-700">
+                    <p className="text-[11px] font-semibold text-brand-700">
                       Buscando “{search.trim()}” em todos os meses · {list.length} resultado(s)
                     </p>
                   )}
@@ -5340,7 +5340,7 @@ function App() {
                           );
                           if (value !== "atrasadas") setOverdueKind("todos");
                         }}
-                        className={`rounded-full px-3 py-2 text-xs font-bold ${entryFilter === value ? "bg-[#14213d] text-white" : "border bg-white text-gray-600 hover:bg-gray-50"}`}
+                        className={`rounded-full px-3 py-2 text-xs font-bold ${entryFilter === value ? "bg-[#191918] text-white" : "border bg-white text-gray-600 hover:bg-gray-50"}`}
                       >
                         {label}
                       </button>
@@ -5367,7 +5367,7 @@ function App() {
                             }
                             setPeriodMode(value);
                           }}
-                          className={`rounded-full px-2.5 py-1.5 text-[11px] font-bold ${periodMode === value ? "bg-indigo-600 text-white" : "border bg-white text-gray-600"}`}
+                          className={`rounded-full px-2.5 py-1.5 text-[11px] font-bold ${periodMode === value ? "bg-brand-600 text-white" : "border bg-white text-gray-600"}`}
                         >
                           {label}
                         </button>
@@ -5407,7 +5407,7 @@ function App() {
                     </span>
                     <button
                       onClick={() => setFilter("Todos")}
-                      className={`rounded-full px-2.5 py-1.5 text-[11px] font-bold ${filter === "Todos" ? "bg-blue-700 text-white" : "border bg-white text-gray-600"}`}
+                      className={`rounded-full px-2.5 py-1.5 text-[11px] font-bold ${filter === "Todos" ? "bg-brand-700 text-white" : "border bg-white text-gray-600"}`}
                     >
                       Todos
                     </button>
@@ -5415,7 +5415,7 @@ function App() {
                       <button
                         key={unit.name}
                         onClick={() => setFilter(unit.name)}
-                        className={`rounded-full px-2.5 py-1.5 text-[11px] font-bold ${filter === unit.name ? "bg-blue-700 text-white" : "border bg-white text-gray-600"}`}
+                        className={`rounded-full px-2.5 py-1.5 text-[11px] font-bold ${filter === unit.name ? "bg-brand-700 text-white" : "border bg-white text-gray-600"}`}
                       >
                         {unit.name}
                       </button>
@@ -5451,12 +5451,12 @@ function App() {
                 ) : periodMode === "mes" ? (
                   <Month value={month} move={move} />
                 ) : (
-                  <span className="rounded-full bg-indigo-50 px-3 py-2 text-xs font-bold text-indigo-700">
+                  <span className="rounded-full bg-brand-50 px-3 py-2 text-xs font-bold text-brand-700">
                     {new Date(`${period.start}T12:00:00`).toLocaleDateString("pt-BR")} – {new Date(`${period.end}T12:00:00`).toLocaleDateString("pt-BR")}
                   </span>
                 )}
               </div>
-              <div className="mb-5 rounded-xl border border-blue-100 bg-blue-50/50 p-4">
+              <div className="mb-5 rounded-xl border border-brand-100 bg-brand-50/50 p-4">
                 <p className="text-[11px] font-semibold text-slate-500">
                   Totais dos <b className="text-slate-700">{list.length} {list.length === 1 ? "lançamento" : "lançamentos"}</b> da lista abaixo · {totalsDescription}
                 </p>
@@ -5471,7 +5471,7 @@ function App() {
                       <p className="text-lg font-extrabold text-emerald-700">{fmt(listTotals.receita)}</p>
                       <p className="text-[11px] text-gray-500">
                         Recebido <b className="text-emerald-700">{fmt(listDetail.receita.realizado)}</b> · A receber{" "}
-                        <b className="text-blue-700">{fmt(listDetail.receita.previsto)}</b>
+                        <b className="text-brand-700">{fmt(listDetail.receita.previsto)}</b>
                       </p>
                     </div>
                   )}
@@ -5490,7 +5490,7 @@ function App() {
                       <p className="text-xs font-bold text-gray-500">Saldo (receitas − despesas)</p>
                       <p
                         className={`text-lg font-extrabold ${
-                          listTotals.receita - listTotals.despesa >= 0 ? "text-blue-700" : "text-red-600"
+                          listTotals.receita - listTotals.despesa >= 0 ? "text-brand-700" : "text-red-600"
                         }`}
                       >
                         {fmt(listTotals.receita - listTotals.despesa)}

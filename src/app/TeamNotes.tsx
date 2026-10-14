@@ -218,7 +218,7 @@ export default function TeamNotesScreen() {
       <div className="rounded-2xl bg-white p-5 shadow-sm">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <h2 className="font-extrabold text-[#14213d]">Notas da equipe</h2>
+            <h2 className="font-extrabold text-[#191918]">Notas da equipe</h2>
             <p className="mt-1 text-xs text-gray-400">
               Controle mensal das notas fiscais dos colaboradores e prestadores de serviço.
             </p>
@@ -239,7 +239,7 @@ export default function TeamNotesScreen() {
               <button
                 type="button"
                 onClick={() => setMemberForm("new")}
-                className="flex items-center gap-1 rounded-xl bg-blue-700 px-3 py-2.5 text-xs font-bold text-white hover:bg-blue-800"
+                className="flex items-center gap-1 rounded-xl bg-brand-700 px-3 py-2.5 text-xs font-bold text-white hover:bg-brand-800"
               >
                 <Plus className="h-4 w-4" />
                 Novo colaborador
@@ -260,7 +260,7 @@ export default function TeamNotesScreen() {
               role="tab"
               aria-selected={tab === value}
               onClick={() => setTab(value)}
-              className={`-mb-px border-b-2 px-3 py-2 text-xs font-bold transition ${tab === value ? "border-blue-700 text-blue-700" : "border-transparent text-slate-500 hover:text-slate-800"}`}
+              className={`-mb-px border-b-2 px-3 py-2 text-xs font-bold transition ${tab === value ? "border-brand-700 text-brand-700" : "border-transparent text-slate-500 hover:text-slate-800"}`}
             >
               {label}
             </button>
@@ -279,13 +279,13 @@ export default function TeamNotesScreen() {
               key={status}
               type="button"
               onClick={() => setStatusFilter((current) => (current === status ? "todos" : status))}
-              className={`rounded-xl border p-4 text-left transition hover:shadow-sm ${statusFilter === status ? "border-blue-400 ring-2 ring-blue-100" : ""}`}
+              className={`rounded-xl border p-4 text-left transition hover:shadow-sm ${statusFilter === status ? "border-brand-400 ring-2 ring-brand-100" : ""}`}
             >
               <p className="text-xs font-bold text-gray-500">{statusLabel[status]}s</p>
               <p className={`mt-1 text-2xl font-extrabold ${status === "enviada" ? "text-emerald-600" : status === "atrasada" ? "text-red-600" : "text-slate-700"}`}>
                 {counts[status]}
               </p>
-              <p className="mt-1 text-[11px] font-semibold text-blue-700">
+              <p className="mt-1 text-[11px] font-semibold text-brand-700">
                 {statusFilter === status ? "Mostrando · clique para limpar" : "Filtrar →"}
               </p>
             </button>
@@ -359,7 +359,7 @@ export default function TeamNotesScreen() {
                           <button
                             type="button"
                             onClick={() => setViewer({ member, invoice })}
-                            className="flex items-center gap-1 rounded-lg border border-blue-200 bg-blue-50 px-2 py-1.5 font-bold text-blue-700 hover:bg-blue-100"
+                            className="flex items-center gap-1 rounded-lg border border-brand-200 bg-brand-50 px-2 py-1.5 font-bold text-brand-700 hover:bg-brand-100"
                           >
                             <Eye className="h-3.5 w-3.5" /> Ver nota
                           </button>
@@ -386,7 +386,7 @@ export default function TeamNotesScreen() {
                         onClick={() => setMemberForm(member)}
                         title="Editar colaborador"
                         aria-label={`Editar colaborador ${member.name}`}
-                        className="flex items-center gap-1 rounded-lg border px-2 py-1.5 font-bold text-blue-700 hover:bg-blue-50"
+                        className="flex items-center gap-1 rounded-lg border px-2 py-1.5 font-bold text-brand-700 hover:bg-brand-50"
                       >
                         <Pencil className="h-3.5 w-3.5" /> Colaborador
                       </button>
@@ -446,7 +446,7 @@ export default function TeamNotesScreen() {
                   </p>
                 </div>
                 <div className="flex gap-1.5">
-                  <button type="button" onClick={() => setMemberForm(member)} className="rounded-lg border px-2 py-1.5 font-bold text-blue-700 hover:bg-blue-50">Editar</button>
+                  <button type="button" onClick={() => setMemberForm(member)} className="rounded-lg border px-2 py-1.5 font-bold text-brand-700 hover:bg-brand-50">Editar</button>
                   {inactiveButton(member)}
                   <button type="button" onClick={() => setDeletingMember(member)} className="rounded-lg border border-red-200 px-2 py-1.5 font-bold text-red-600 hover:bg-red-50">Excluir</button>
                 </div>
@@ -536,7 +536,7 @@ function Modal({ title, subtitle, close, children }: { title: string; subtitle?:
       <div className="flex max-h-[94vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-white shadow-2xl">
         <header className="flex items-start justify-between border-b px-6 py-4">
           <div className="min-w-0">
-            <h2 className="truncate font-extrabold text-[#14213d]">{title}</h2>
+            <h2 className="truncate font-extrabold text-[#191918]">{title}</h2>
             {subtitle && <p className="mt-1 text-xs text-slate-500">{subtitle}</p>}
           </div>
           <button type="button" onClick={close} aria-label="Fechar"><X className="h-5 w-5" /></button>
@@ -653,7 +653,7 @@ function MemberForm({
         </div>
         <footer className="flex gap-3 border-t bg-gray-50 px-6 py-4">
           <button type="button" onClick={close} className="flex-1 rounded-xl border py-2.5 text-sm font-bold">Cancelar</button>
-          <button disabled={busy} className="flex-1 rounded-xl bg-blue-700 py-2.5 text-sm font-bold text-white disabled:opacity-50">{busy ? "Salvando…" : "Salvar"}</button>
+          <button disabled={busy} className="flex-1 rounded-xl bg-brand-700 py-2.5 text-sm font-bold text-white disabled:opacity-50">{busy ? "Salvando…" : "Salvar"}</button>
         </footer>
       </form>
     </Modal>
@@ -917,7 +917,7 @@ function InvoiceForm({
                   setDragging(false);
                   void addFiles(Array.from(event.dataTransfer.files));
                 }}
-                className={`flex cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed p-5 transition ${dragging ? "border-blue-500 bg-blue-50 text-blue-700" : "border-slate-300 bg-white text-slate-600 hover:border-blue-300 hover:text-blue-700"}`}
+                className={`flex cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed p-5 transition ${dragging ? "border-brand-500 bg-brand-50 text-brand-700" : "border-slate-300 bg-white text-slate-600 hover:border-brand-300 hover:text-brand-700"}`}
               >
                 <Plus className="h-5 w-5" />
                 {dragging ? "Solte o arquivo para anexar" : "Arraste a nota aqui ou clique para escolher"}
@@ -944,7 +944,7 @@ function InvoiceForm({
             </button>
           )}
           <button type="button" onClick={close} className="flex-1 rounded-xl border py-2.5 text-sm font-bold">Cancelar</button>
-          <button disabled={busy} className="flex-1 rounded-xl bg-blue-700 py-2.5 text-sm font-bold text-white disabled:opacity-50">{busy ? "Salvando…" : "Salvar nota"}</button>
+          <button disabled={busy} className="flex-1 rounded-xl bg-brand-700 py-2.5 text-sm font-bold text-white disabled:opacity-50">{busy ? "Salvando…" : "Salvar nota"}</button>
         </footer>
       </form>
     </Modal>
@@ -997,7 +997,7 @@ function InvoiceViewer({ member, invoice, close, edit }: { member: TeamMember; i
       >
         <header className="flex flex-wrap items-start justify-between gap-3 border-b px-6 py-4">
           <div className="min-w-0">
-            <h2 className="truncate font-extrabold text-[#14213d]">Nota de {member.name}</h2>
+            <h2 className="truncate font-extrabold text-[#191918]">Nota de {member.name}</h2>
             <p className="mt-0.5 text-xs text-slate-500">{details}</p>
             {invoice.notes && <p className="mt-0.5 text-xs text-slate-400">{invoice.notes}</p>}
           </div>
@@ -1007,7 +1007,7 @@ function InvoiceViewer({ member, invoice, close, edit }: { member: TeamMember; i
                 <Download className="h-4 w-4" /> Baixar
               </button>
             )}
-            <button type="button" onClick={edit} className="flex items-center gap-1 rounded-xl bg-blue-700 px-3 py-2 text-xs font-bold text-white hover:bg-blue-800">
+            <button type="button" onClick={edit} className="flex items-center gap-1 rounded-xl bg-brand-700 px-3 py-2 text-xs font-bold text-white hover:bg-brand-800">
               <Pencil className="h-4 w-4" /> Editar
             </button>
             <button type="button" onClick={close} aria-label="Fechar" className="rounded-lg p-1.5 hover:bg-gray-100"><X className="h-5 w-5" /></button>
@@ -1020,7 +1020,7 @@ function InvoiceViewer({ member, invoice, close, edit }: { member: TeamMember; i
                 key={path}
                 type="button"
                 onClick={() => setSelected(path)}
-                className={`flex max-w-[220px] items-center gap-1 rounded-lg px-2.5 py-1.5 text-[11px] font-bold ${selected === path ? "bg-[#14213d] text-white" : "border bg-white text-slate-600"}`}
+                className={`flex max-w-[220px] items-center gap-1 rounded-lg px-2.5 py-1.5 text-[11px] font-bold ${selected === path ? "bg-[#191918] text-white" : "border bg-white text-slate-600"}`}
               >
                 <FileText className="h-3.5 w-3.5 shrink-0" />
                 <span className="truncate">{fileLabel(path)}</span>
@@ -1032,7 +1032,7 @@ function InvoiceViewer({ member, invoice, close, edit }: { member: TeamMember; i
           {!selected ? (
             <div className="text-center text-sm text-slate-500">
               <p>Esta nota não tem arquivo anexado.</p>
-              <button type="button" onClick={edit} className="mt-3 rounded-xl bg-blue-700 px-4 py-2 text-xs font-bold text-white">Anexar arquivo</button>
+              <button type="button" onClick={edit} className="mt-3 rounded-xl bg-brand-700 px-4 py-2 text-xs font-bold text-white">Anexar arquivo</button>
             </div>
           ) : error ? (
             <p className="rounded-xl bg-red-50 p-3 text-xs font-bold text-red-700">{error}</p>
@@ -1187,7 +1187,7 @@ function CategoriesPanel({
           maxLength={80}
           className="w-full max-w-sm rounded-xl border bg-gray-50 px-3 py-2 text-sm"
         />
-        <button disabled={busy} className="flex items-center gap-1 rounded-xl bg-blue-700 px-3 py-2 text-xs font-bold text-white disabled:opacity-50">
+        <button disabled={busy} className="flex items-center gap-1 rounded-xl bg-brand-700 px-3 py-2 text-xs font-bold text-white disabled:opacity-50">
           <Plus className="h-4 w-4" /> Cadastrar categoria
         </button>
       </form>
@@ -1219,7 +1219,7 @@ function CategoriesPanel({
             <div className="flex shrink-0 gap-1 text-xs font-bold">
               {editingId === category.id ? (
                 <>
-                  <button type="button" disabled={busy} onClick={() => void rename(category)} className="rounded px-1.5 py-1 text-blue-700 hover:bg-blue-50">Salvar</button>
+                  <button type="button" disabled={busy} onClick={() => void rename(category)} className="rounded px-1.5 py-1 text-brand-700 hover:bg-brand-50">Salvar</button>
                   <button type="button" onClick={() => setEditingId(null)} className="rounded px-1.5 py-1 text-slate-500 hover:bg-slate-50">Cancelar</button>
                 </>
               ) : (
@@ -1231,7 +1231,7 @@ function CategoriesPanel({
                       setEditName(category.name);
                       setError("");
                     }}
-                    className="rounded px-1.5 py-1 text-blue-700 hover:bg-blue-50"
+                    className="rounded px-1.5 py-1 text-brand-700 hover:bg-brand-50"
                   >
                     Editar
                   </button>
