@@ -25,7 +25,6 @@ import {
 } from "../lib/bridge";
 import { addMonthsClamped, changedSeriesFields, seriesDueDate } from "../lib/seriesDates";
 import { CurrencyInput, Month, fmt, labelMonth, moneyInput, parseMoney } from "./shared";
-import TeamNotesScreen from "./TeamNotes";
 import BanksSection from "./Banks";
 import { snapshotFile, unreadableFileMessage } from "../lib/files";
 import {
@@ -36,7 +35,6 @@ import {
   CalendarClock,
   ChevronRight,
   CreditCard,
-  FileText,
   LayoutDashboard,
   Menu,
   Paperclip,
@@ -137,7 +135,6 @@ type User = {
   role: "master" | "operador";
   units: Unit[];
   canViewReports: boolean;
-  canViewTeamNotes: boolean;
   hiddenScreens: string[];
 };
 // Abas que o Master pode ocultar por usuário (a aba "Usuários" é sempre
@@ -179,14 +176,13 @@ const units: CostCenter[] = [
   makeCostCenter("Pessoa Física", "PF", "amber"),
 ];
 const reportsAccessFlag = "__reports__";
-// Libera a aba "Notas da equipe" (além do Master).
+// Filtra a flag legada para que ela não apareça como centro de custo.
 const teamNotesAccessFlag = "__team_notes__";
 const profileAccess = (values: string[] | null | undefined) => {
   const raw = values || [];
   return {
     units: raw.filter((value) => value !== reportsAccessFlag && value !== teamNotesAccessFlag),
     canViewReports: raw.includes(reportsAccessFlag),
-    canViewTeamNotes: raw.includes(teamNotesAccessFlag),
   };
 };
 const costCenterVisual = (row: CostCenterRow): CostCenter => {
@@ -606,7 +602,6 @@ function Login({ onLogin }: { onLogin: (user: User) => void }) {
       role: profile.role as User["role"],
       units: access.units,
       canViewReports: access.canViewReports,
-      canViewTeamNotes: access.canViewTeamNotes,
       hiddenScreens: profile.hidden_screens ?? [],
     };
     localStorage.setItem("fincore.user", JSON.stringify(user));
@@ -2142,7 +2137,6 @@ function UsersAdmin({
     units: Unit[],
     canViewReports: boolean,
     hiddenScreens: string[],
-    canViewTeamNotes: boolean,
   ) => Promise<void>;
 }) {
   const [name, setName] = useState("");
@@ -2157,7 +2151,6 @@ function UsersAdmin({
   const [editUnits, setEditUnits] = useState<Unit[]>([]);
   const [editCanViewReports, setEditCanViewReports] = useState(false);
   const [editHiddenScreens, setEditHiddenScreens] = useState<string[]>([]);
-  const [editCanViewTeamNotes, setEditCanViewTeamNotes] = useState(false);
   const [savingPermissions, setSavingPermissions] = useState(false);
   const toggleUnit = (unit: Unit) =>
     setSelectedUnits((current) =>
@@ -2186,7 +2179,6 @@ function UsersAdmin({
     setEditUnits(user.units);
     setEditCanViewReports(user.canViewReports);
     setEditHiddenScreens(user.hiddenScreens ?? []);
-    setEditCanViewTeamNotes(user.canViewTeamNotes);
   };
   const toggleEditUnit = (unit: Unit) =>
     setEditUnits((current) =>
@@ -2205,7 +2197,7 @@ function UsersAdmin({
     setSavingPermissions(true);
     setError("");
     try {
-      await updatePermissions(user, editUnits, editCanViewReports, editHiddenScreens, editCanViewTeamNotes);
+      await updatePermissions(user, editUnits, editCanViewReports, editHiddenScreens);
       setEditingUserId(null);
       setMessage(`Permissões de ${user.name} atualizadas.`);
     } catch (permissionError) {
@@ -2384,11 +2376,6 @@ function UsersAdmin({
                           Relatórios
                         </span>
                       )}
-                      {user.canViewTeamNotes && (
-                        <span className="rounded-full bg-teal-50 px-2 py-1 text-xs font-bold text-teal-700">
-                          Notas da equipe
-                        </span>
-                      )}
                       <button
                         onClick={() => startEditingPermissions(user)}
                         className="rounded-lg border border-brand-200 px-2.5 py-1.5 text-xs font-bold text-brand-700"
@@ -2462,16 +2449,6 @@ function UsersAdmin({
                       }
                     />
                     Permitir acesso à aba Relatórios
-                  </label>
-                  <label className="mt-2 flex cursor-pointer items-center gap-2 text-xs font-bold text-teal-800">
-                    <input
-                      type="checkbox"
-                      checked={editCanViewTeamNotes}
-                      onChange={(event) =>
-                        setEditCanViewTeamNotes(event.target.checked)
-                      }
-                    />
-                    Permitir acesso à aba Notas da equipe
                   </label>
                   <div className="mt-3 flex justify-end gap-2">
                     <button
@@ -3643,7 +3620,6 @@ function App() {
         role: profile.role as User["role"],
         units: access.units,
         canViewReports: access.canViewReports,
-        canViewTeamNotes: access.canViewTeamNotes,
         hiddenScreens: profile.hidden_screens ?? [],
       });
       setAuthReady(true);
@@ -3820,8 +3796,6 @@ function App() {
     if (currentUser.role === "master") return true;
     if (id === "usuarios") return false;
     if (id === "relatorios" && !currentUser.canViewReports) return false;
-    // Aba opcional: só aparece para quem foi liberado (além do Master).
-    if (id === "notas") return currentUser.canViewTeamNotes;
     return !(currentUser.hiddenScreens ?? []).includes(id);
   };
   // Se o usuário estiver numa aba que foi removida dele, leva para a
@@ -3851,7 +3825,6 @@ function App() {
           role: profile.role as User["role"],
           units: access.units,
           canViewReports: access.canViewReports,
-          canViewTeamNotes: access.canViewTeamNotes,
           hiddenScreens: profile.hidden_screens ?? [],
         };
       }),
@@ -3984,7 +3957,6 @@ function App() {
     const allowedUnits = [
       ...user.units,
       ...(user.canViewReports ? [] : [reportsAccessFlag]),
-      ...(user.canViewTeamNotes ? [teamNotesAccessFlag] : []),
     ];
     const { error } = await supabase
       .from("profiles")
@@ -3998,7 +3970,6 @@ function App() {
     allowedUnits: Unit[],
     canViewReports: boolean,
     hiddenScreens: string[],
-    canViewTeamNotes: boolean,
   ) => {
     const { error } = await supabase
       .from("profiles")
@@ -4006,7 +3977,6 @@ function App() {
         allowed_units: [
           ...allowedUnits,
           ...(canViewReports ? [reportsAccessFlag] : []),
-          ...(canViewTeamNotes ? [teamNotesAccessFlag] : []),
         ],
         hidden_screens: hiddenScreens,
       })
@@ -4498,7 +4468,6 @@ function App() {
       { id: "contas", text: "Contas", Icon: Wallet },
       { id: "categorias", text: "Plano de contas", Icon: Tag },
       { id: "contatos", text: "Fornecedores/clientes", Icon: Building2 },
-      { id: "notas", text: "Notas da equipe", Icon: FileText },
       { id: "relatorios", text: "Relatórios", Icon: BarChart3 },
       { id: "usuarios", text: "Usuários", Icon: Menu },
     ];
@@ -4578,8 +4547,6 @@ function App() {
                       ? "Plano de contas"
                       : screen === "contatos"
                         ? "Fornecedores/clientes"
-                      : screen === "notas"
-                        ? "Notas da equipe"
                       : screen === "usuarios"
                         ? "Usuários e acessos"
                         : screen === "relatorios"
@@ -5108,8 +5075,6 @@ function App() {
                 );
               }}
             />
-          ) : screen === "notas" ? (
-            <TeamNotesScreen />
           ) : screen === "relatorios" ? (
             <Reports
               entries={entries.filter(

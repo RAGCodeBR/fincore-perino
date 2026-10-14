@@ -4,7 +4,7 @@ Acesse o sistema: https://ragcodebr.github.io/fincore-perino/
 
 Cópia independente do FinCore com banco Supabase próprio. O endereço é público e o acesso aos dados exige login. Administrador desta instalação: `master@financeiro.com`, com a senha definida pelo responsável.
 
-A cópia preserva dashboard, ambientes, contas, plano de contas, receitas, despesas, recorrência, parcelas, edição de séries, contatos, bancos, juros, descontos, anexos, relatórios, usuários/permissões e notas da equipe.
+A cópia preserva dashboard, ambientes, contas, plano de contas, receitas, despesas, recorrência, parcelas, edição de séries, contatos, bancos, juros, descontos, anexos, relatórios, usuários/permissões.
 
 O projeto Supabase desta instalação é `zpxrkaxmwrkrdwdbmspe`. Os cadastros começaram zerados. O Master está ativo e as permissões de criação de ambiente, receita e despesa foram validadas sob RLS com uma transação revertida.
 
@@ -31,3 +31,5 @@ Build e os seis testes em `tests/seriesDates.test.mjs` passaram. As permissões 
 ## Origem e isolamento
 
 Base: `RAGCodeBR/sistema-financeiro`, commit `e3d8f533bbc6dd7751cbb68cc6c23ba800d6a0ee`. O repositório e banco do FinCore original foram preservados. Esta aplicação bloqueia a conexão com o projeto Supabase original.
+
+A seção Notas da equipe foi retirada desta edição Perino em 14/10/2026.
