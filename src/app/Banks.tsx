@@ -1,6 +1,8 @@
 import { FormEvent, useState } from "react";
 import { Landmark, Plus } from "lucide-react";
 import { Bank, deleteBank, saveBank } from "../lib/bridge";
+import { summarizeBank, type FinancialEntry } from "../lib/finance";
+import { fmt } from "./shared";
 
 const normalize = (name: string) => name.trim().replace(/\s+/g, " ");
 const sameName = (a: string, b: string) =>
@@ -12,14 +14,13 @@ export default function BanksSection({
   banks,
   ready,
   canManage,
-  usage,
+  entries,
   setBanks,
 }: {
   banks: Bank[];
   ready: boolean;
   canManage: boolean;
-  /** Quantidade de despesas vinculadas a cada banco (por id). */
-  usage: Record<string, number>;
+  entries: FinancialEntry[];
   setBanks: (update: (old: Bank[]) => Bank[]) => void;
 }) {
   const [name, setName] = useState("");
@@ -32,7 +33,7 @@ export default function BanksSection({
     const clean = normalize(value);
     if (clean.length < 2 || clean.length > 80) return "Informe um nome entre 2 e 80 caracteres.";
     if (banks.some((bank) => bank.id !== ignoreId && sameName(bank.name, clean)))
-      return "Já existe um banco com esse nome.";
+      return "Já existe uma conta bancária com esse nome.";
     return "";
   };
 
@@ -50,7 +51,7 @@ export default function BanksSection({
       setBanks((old) => sortBanks([...old, saved]));
       setName("");
     } catch (saveError) {
-      setError(saveError instanceof Error ? saveError.message : "Não foi possível cadastrar o banco.");
+      setError(saveError instanceof Error ? saveError.message : "Não foi possível cadastrar a conta bancária.");
     } finally {
       setBusy(false);
     }
@@ -69,25 +70,25 @@ export default function BanksSection({
       setBanks((old) => sortBanks(old.map((item) => (item.id === bank.id ? saved : item))));
       setEditingId(null);
     } catch (saveError) {
-      setError(saveError instanceof Error ? saveError.message : "Não foi possível renomear o banco.");
+      setError(saveError instanceof Error ? saveError.message : "Não foi possível renomear a conta bancária.");
     } finally {
       setBusy(false);
     }
   };
 
   const remove = async (bank: Bank) => {
-    const count = usage[bank.id] ?? 0;
+    const count = entries.filter(entry => entry.bankId === bank.id).length;
     const warning = count
-      ? `\n\n${count} despesa(s) estão vinculadas a ele e vão ficar sem banco (nada é apagado).`
+      ? `\n\n${count} lançamento(s) estão vinculados a esta conta e ficarão sem conta bancária (nada é apagado).`
       : "";
-    if (!window.confirm(`Excluir o banco "${bank.name}"?${warning}`)) return;
+    if (!window.confirm(`Excluir a conta bancária "${bank.name}"?${warning}`)) return;
     setBusy(true);
     setError("");
     try {
       await deleteBank(bank.id);
       setBanks((old) => old.filter((item) => item.id !== bank.id));
     } catch (deleteError) {
-      setError(deleteError instanceof Error ? deleteError.message : "Não foi possível excluir o banco.");
+      setError(deleteError instanceof Error ? deleteError.message : "Não foi possível excluir a conta bancária.");
     } finally {
       setBusy(false);
     }
@@ -97,9 +98,9 @@ export default function BanksSection({
     <section className="mt-5 rounded-2xl bg-white p-5 shadow-sm">
       <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h2 className="font-extrabold text-slate-900">Bancos</h2>
+          <h2 className="font-extrabold text-slate-900">Contas bancárias</h2>
           <p className="text-xs text-gray-400">
-            Bancos usados para pagar as despesas. Escolha o banco no lançamento da despesa.
+            Cadastre as contas usadas para pagar e receber. Centros de custo e planos de contas ficam separados.
           </p>
         </div>
         {canManage && ready && (
@@ -107,7 +108,7 @@ export default function BanksSection({
             <input
               value={name}
               onChange={(event) => setName(event.target.value)}
-              placeholder="Ex.: Itaú, Bradesco, Nubank PJ"
+              placeholder="Ex.: Itaú PJ • conta 12345-6"
               maxLength={80}
               className="w-56 rounded-xl border bg-gray-50 px-3 py-2 text-sm"
             />
@@ -115,20 +116,21 @@ export default function BanksSection({
               disabled={busy}
               className="flex items-center gap-1 rounded-xl bg-brand-700 px-3 py-2 text-xs font-bold text-white disabled:opacity-50"
             >
-              <Plus className="h-4 w-4" /> Cadastrar banco
+              <Plus className="h-4 w-4" /> Cadastrar conta bancária
             </button>
           </form>
         )}
       </div>
       {!ready && (
         <p className="rounded-xl bg-amber-50 p-3 text-xs font-bold text-amber-800">
-          O cadastro de bancos ainda não está disponível no banco de dados. Rode `npx supabase db push` e recarregue a página.
+          O cadastro de contas bancárias está temporariamente indisponível. Atualize a página ou contate o responsável.
         </p>
       )}
+      {canManage && <p className="mb-4 rounded-xl bg-brand-50 p-3 text-xs text-brand-800">O saldo considera apenas receitas e despesas realizadas vinculadas à conta, em todos os meses. Não inclui saldo anterior nem lançamentos sem conta informada.</p>}
       {error && <p role="alert" className="mb-3 rounded-xl bg-red-50 p-3 text-xs font-bold text-red-700">{error}</p>}
       {ready && (
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-          {banks.map((bank) => (
+          {banks.map((bank) => { const summary = summarizeBank(entries, bank.id); return (
             <article key={bank.id} className="flex items-center gap-3 rounded-xl border p-4">
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
                 <Landmark className="h-4 w-4" />
@@ -149,7 +151,8 @@ export default function BanksSection({
                 ) : (
                   <p className="truncate font-bold text-slate-800">{bank.name}</p>
                 )}
-                <p className="text-[11px] text-slate-400">{usage[bank.id] ?? 0} despesa(s) vinculada(s)</p>
+                <p className="text-[11px] text-slate-400">{summary.count} lançamento(s) vinculado(s)</p>
+                {canManage && <div className="mt-3 space-y-1 text-xs"><p className="text-slate-500">Saldo dos lançamentos realizados</p><b className={`block text-xl ${summary.balance < 0 ? "text-red-600" : "text-brand-700"}`}>{fmt(summary.balance)}</b><p>Recebido {fmt(summary.income)} · Pago {fmt(summary.expense)}</p><p className="text-slate-500">A receber {fmt(summary.receive)} · A pagar {fmt(summary.pay)}</p></div>}
               </div>
               {canManage && (
                 <div className="flex shrink-0 gap-1 text-xs font-bold">
@@ -177,10 +180,10 @@ export default function BanksSection({
                 </div>
               )}
             </article>
-          ))}
+          ); })}
           {!banks.length && (
             <p className="text-sm text-slate-400">
-              {canManage ? "Nenhum banco cadastrado. Use o campo acima para cadastrar." : "Nenhum banco cadastrado ainda."}
+              {canManage ? "Nenhuma conta bancária cadastrada. Use o campo acima para cadastrar." : "Nenhuma conta bancária cadastrada ainda."}
             </p>
           )}
         </div>

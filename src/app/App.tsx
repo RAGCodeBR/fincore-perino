@@ -26,6 +26,7 @@ import {
 import { addMonthsClamped, changedSeriesFields, seriesDueDate } from "../lib/seriesDates";
 import { CurrencyInput, Month, fmt, labelMonth, moneyInput, parseMoney } from "./shared";
 import BanksSection from "./Banks";
+import { entryValue, summarizeFinancialEntries, summarizeBank, localDateKey, localMonthKey } from "../lib/finance";
 import { snapshotFile, unreadableFileMessage } from "../lib/files";
 import {
   AlertTriangle,
@@ -101,11 +102,6 @@ const normalizeSearch = (text: string) =>
   text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase("pt-BR").trim();
 // Valor que efetivamente saiu/entrou: numa despesa já paga, soma os juros e
 // abate o desconto.
-const entryValue = (entry: Entry) =>
-  entry.amount +
-  (entry.kind === "despesa" && entry.status === "realizado"
-    ? (entry.juros || 0) - (entry.discount || 0)
-    : 0);
 // Dias de atraso de uma despesa paga: diferença entre pagamento e vencimento.
 const lateDays = (entry: Entry) =>
   entry.paidDate && entry.paidDate > entry.date
@@ -119,7 +115,6 @@ type Category = {
   icon?: string;
   color?: string;
 };
-type Account = { id: string; name: string; unit: Unit };
 type Counterparty = {
   id: string;
   kind: Kind;
@@ -237,13 +232,7 @@ const defaults: Category[] = [
     icon: "🏠",
   },
 ];
-const baseAccounts: Account[] = [
-    "Conta corrente",
-    "Conta digital",
-    "Cartão de crédito",
-    "Caixa",
-  ].map((name, index) => ({ id: `conta-${index}`, name, unit: "Consultoria" })),
-  icons = [
+const icons = [
     "🏷️",
     "💼",
     "📈",
@@ -1494,8 +1483,7 @@ function EntryForm({
         {
           kind,
           unit,
-          // Every centre has its own financial account. Keeping this derived
-          // prevents the duplicated centre/account selectors from diverging.
+          // Campo legado para compatibilidade; a conta bancária é vinculada por bankId.
           account: unit,
           category,
           description,
@@ -1515,9 +1503,8 @@ function EntryForm({
           attachments,
           juros: kind === "despesa" ? finalJuros : 0,
           paidDate: kind === "despesa" ? paidDate || undefined : undefined,
-          ...(kind === "despesa"
-            ? { discount: finalDiscount, bankId: bankId || null }
-            : {}),
+          discount: kind === "despesa" ? finalDiscount : 0,
+          bankId: bankId || null,
         },
         scope,
         sameMonthInstallments ? sameMonthPartsState : undefined,
@@ -1874,26 +1861,17 @@ function EntryForm({
                 />
                 <span className="mt-1 block font-normal text-slate-400">Mede o atraso em relação ao vencimento (campo Data).</span>
               </label>
-              <label className="text-xs font-bold">
-                Banco que pagou
-                <select
-                  value={bankId}
-                  onChange={(e) => setBankId(e.target.value)}
-                  className="mt-1.5 w-full rounded-xl border bg-gray-50 p-3 text-sm font-normal"
-                >
-                  <option value="">Não informado</option>
-                  {banks.map((bank) => (
-                    <option key={bank.id} value={bank.id}>
-                      {bank.name}
-                    </option>
-                  ))}
-                </select>
-                {!banks.length && (
-                  <span className="mt-1 block font-normal text-slate-400">Cadastre os bancos na aba Contas.</span>
-                )}
-              </label>
+
             </div>
           )}
+          <label className="block text-xs font-bold">
+            {kind === "receita" ? "Conta bancária de recebimento" : "Conta bancária de pagamento"}
+            <select value={bankId} onChange={(e) => setBankId(e.target.value)} className="mt-1.5 w-full rounded-xl border bg-gray-50 p-3 text-sm font-normal">
+              <option value="">Não informada</option>
+              {banks.map((bank) => <option key={bank.id} value={bank.id}>{bank.name}</option>)}
+            </select>
+            <span className="mt-1 block font-normal text-slate-400">{banks.length ? "Define a conta usada na movimentação. Centros de custo são escolhidos separadamente." : "Cadastre uma conta bancária na aba Contas."}</span>
+          </label>
           {converting && (
             <p className="rounded-xl bg-amber-50 p-3 text-xs font-bold text-amber-800">
               Ao salvar, este lançamento será substituído pelas parcelas abaixo (os anexos são mantidos).
@@ -2563,7 +2541,7 @@ function Entries({
                     <CalendarClock className="h-3.5 w-3.5" />
                     {new Date(`${x.date}T12:00:00`).toLocaleDateString("pt-BR")}
                   </span>
-                  <span>{x.unit} · {x.category} · {x.account}</span>
+                  <span>{x.unit} · {x.category}</span>
                 </p>
                 {x.beneficiary?.trim() && (
                   <p className="mt-1 text-xs font-medium text-slate-600">
@@ -2600,6 +2578,7 @@ function Entries({
                     ))}
                   </div>
                 )}
+                {bankName(x.bankId) && <p className="mt-1 text-[11px] font-bold text-slate-600">Conta bancária: {bankName(x.bankId)}</p>}
                 {x.kind === "despesa" &&
                   ((x.juros ?? 0) > 0 || (x.discount ?? 0) > 0 || x.paidDate || bankName(x.bankId)) && (
                   <div className="mt-1 space-y-0.5 text-[11px]">
@@ -2610,9 +2589,6 @@ function Entries({
                         {(x.discount ?? 0) > 0 && <> · Desconto <b className="text-emerald-700">{fmt(x.discount ?? 0)}</b></>}
                         {" "}· Total pago <b className="text-slate-700">{fmt(entryValue(x))}</b>
                       </p>
-                    )}
-                    {bankName(x.bankId) && (
-                      <p className="font-bold text-slate-600">Banco: {bankName(x.bankId)}</p>
                     )}
                     {x.paidDate && (
                       <p className="text-slate-500">
@@ -2907,14 +2883,14 @@ function CounterpartyReportPanel({
 
 function Reports({
   entries,
-  accounts,
+  banks,
   allowedUnits,
   categories,
   contacts,
   incomeVisible = true,
 }: {
   entries: Entry[];
-  accounts: Account[];
+  banks: Bank[];
   allowedUnits: typeof units;
   categories: Category[];
   contacts: Counterparty[];
@@ -2947,7 +2923,7 @@ function Reports({
       entry.date >= from &&
       entry.date <= to &&
       (unit === "Todos" || entry.unit === unit) &&
-      (account === "Todos" || entry.account === account) &&
+      (account === "Todos" || (entry.bankId || "__unassigned__") === account) &&
       (category === "Todos" || entry.category === category) &&
       (kind === "todos" || entry.kind === kind) &&
       (counterparty === "Todos" ||
@@ -3068,22 +3044,9 @@ function Reports({
   const reportContacts = contacts.filter((contact) =>
     unit === "Todos" || contact.unit === unit,
   );
-  const accountRows = accounts
-    .filter((item) => unit === "Todos" || item.unit === unit)
-    .map((item) => ({
-      name: item.name,
-      unit: item.unit,
-      balance: filtered
-        .filter(
-          (entry) =>
-            entry.account === item.name && entry.unit === item.unit && entry.status === "realizado",
-        )
-        .reduce(
-          (sum, entry) =>
-            sum + (entry.kind === "receita" ? entryValue(entry) : -entryValue(entry)),
-          0,
-        ),
-    }));
+  const accountRows = [...banks.map(bank => ({ id: bank.id, name: bank.name })), { id: "__unassigned__", name: "Sem conta bancária informada" }]
+    .filter(item => account === "Todos" || item.id === account)
+    .map(item => ({ ...item, balance: summarizeBank(filtered, item.id === "__unassigned__" ? null : item.id).balance }));
   return (
     <section className="space-y-5">
       <div className="rounded-2xl bg-white p-5 shadow-sm">
@@ -3125,18 +3088,15 @@ function Reports({
             </select>
           </label>
           <label className="text-xs font-bold">
-            Conta
+            Conta bancária
             <select
               value={account}
               onChange={(event) => setAccount(event.target.value)}
               className="mt-1.5 block rounded-xl border bg-gray-50 p-2.5 text-sm font-normal"
             >
               <option>Todos</option>
-              {accounts
-                .filter((item) => unit === "Todos" || item.unit === unit)
-                .map((item) => (
-                  <option key={item.id}>{item.name}</option>
-                ))}
+              <option value="__unassigned__">Sem conta bancária informada</option>
+              {banks.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}
             </select>
           </label>
           <label className="text-xs font-bold">
@@ -3427,18 +3387,18 @@ function Reports({
       {incomeVisible && (
       <section className="rounded-2xl bg-white p-5 shadow-sm">
         <h2 className="font-extrabold text-[#191918]">
-          Movimento realizado por conta no período
+          Movimento realizado por conta bancária no período
         </h2>
         <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           {accountRows.map((item) => (
             <button
-              key={`${item.unit}:${item.name}`}
+              key={item.id}
               type="button"
-              onClick={() => openDrill(`${item.name} · ${item.unit}`, pick((e) => e.account === item.name && e.unit === item.unit && e.status === "realizado"))}
+              onClick={() => openDrill(item.name, pick((e) => (e.bankId || "__unassigned__") === item.id && e.status === "realizado"))}
               className="rounded-xl border p-4 text-left transition hover:border-brand-300 hover:shadow-sm"
             >
               <p className="font-bold text-slate-800">{item.name}</p>
-              <p className="text-xs text-gray-400">{item.unit}</p>
+              <p className="text-xs text-gray-400">Entradas menos saídas realizadas</p>
               <p
                 className={`mt-3 text-lg font-extrabold ${item.balance >= 0 ? "text-brand-700" : "text-red-600"}`}
               >
@@ -3563,7 +3523,6 @@ function App() {
     [categories, setCategories] = useState<Category[]>([]),
     [centers, setCenters] = useState<CostCenter[]>([]),
     [centerTableReady, setCenterTableReady] = useState(false),
-    [accounts, setAccounts] = useState<Account[]>([]),
     [filter, setFilter] = useState<Unit | "Todos">("Todos"),
     [entryFilter, setEntryFilter] = useState<
       "todos" | "pagar" | "receber" | "pagas" | "recebidas" | "atrasadas"
@@ -3579,6 +3538,10 @@ function App() {
     [users, setUsers] = useState<User[]>([]),
     [dataReady, setDataReady] = useState(false),
     [dataError, setDataError] = useState(""),
+    [syncVersion, setSyncVersion] = useState(0),
+    [refreshing, setRefreshing] = useState(false),
+    [syncError, setSyncError] = useState(false),
+    [lastSync, setLastSync] = useState(""),
     [month, setMonth] = useState(
       () => new Date(new Date().getFullYear(), new Date().getMonth(), 1),
     );
@@ -3669,10 +3632,9 @@ function App() {
         } = await supabase.auth.refreshSession();
         if (refreshError || !session)
           throw refreshError || new Error("Sessão expirada.");
-        const [entryRows, categoryRows, accountRows] = await Promise.all([
+        const [entryRows, categoryRows] = await Promise.all([
           readAuthenticatedRows<any>("entries", "date.desc"),
           readAuthenticatedRows<Category>("categories"),
-          readAuthenticatedRows<any>("accounts"),
         ]);
         if (!active) return;
         const loadedEntries = entryRows.map((row: any) => ({
@@ -3737,13 +3699,6 @@ function App() {
         setBanks(bankRows);
         setBanksReady(bankTableAvailable);
         setCategories(categoryRows);
-        setAccounts(
-          accountRows.map((row: any) => ({
-            id: row.id,
-            name: row.name,
-            unit: row.unit as Unit,
-          })),
-        );
         setDataReady(true);
       } catch (error) {
         if (!active) return;
@@ -3762,40 +3717,60 @@ function App() {
     if (!currentUser || !dataReady || dataError) return;
     let cancelled = false;
     let busy = false;
-    const refreshEntries = async () => {
+    const refreshFinancialData = async () => {
       if (busy || document.visibilityState === "hidden") return;
       busy = true;
+      setRefreshing(true);
       try {
-        const rows = await readAuthenticatedRows<any>("entries", "date.desc");
-        if (!cancelled) {
-          setEntries(rows.map((row: any) => ({
-            ...row,
-            seriesId: row.series_id || undefined,
-            counterpartyId: row.counterparty_id ?? undefined,
-            amount: Number(row.amount),
-            juros: row.juros != null ? Number(row.juros) : 0,
-            paidDate: row.paid_date || undefined,
-            discount: row.discount != null ? Number(row.discount) : undefined,
-            bankId: row.bank_id === undefined ? undefined : row.bank_id,
-          })) as Entry[]);
+        const [rows, categoryRows, centerRows, bankRows, contactRows, profileRows] = await Promise.all([
+          readAuthenticatedRows<any>("entries", "date.desc"),
+          readAuthenticatedRows<Category>("categories"),
+          centerTableReady ? readAuthenticatedRows<CostCenterRow>("cost_centers") : Promise.resolve(null),
+          banksReady ? readAuthenticatedRows<Bank>("banks") : Promise.resolve(null),
+          contactsTableReady ? readAuthenticatedRows<Counterparty>("counterparties") : Promise.resolve(null),
+          readAuthenticatedRows<any>("profiles"),
+        ]);
+        if (cancelled) return;
+        setEntries(rows.map((row: any) => ({
+          ...row, seriesId: row.series_id || undefined, counterpartyId: row.counterparty_id ?? undefined,
+          amount: Number(row.amount), juros: Number(row.juros || 0), paidDate: row.paid_date || undefined,
+          discount: Number(row.discount || 0), bankId: row.bank_id ?? null,
+        })) as Entry[]);
+        setCategories(categoryRows);
+        if (centerRows) setCenters(centerRows.map(costCenterVisual));
+        if (bankRows) setBanks(bankRows);
+        if (contactRows) setSavedContacts(contactRows);
+        const profile = profileRows.find((row: any) => row.id === currentUser.id);
+        if (profile) {
+          const access = profileAccess(profile.allowed_units);
+          setCurrentUser(user => user && user.id === profile.id ? {
+            ...user, role: profile.role, name: profile.full_name, units: access.units,
+            canViewReports: access.canViewReports, canCreatePlans: access.canCreatePlans,
+            hiddenScreens: profile.hidden_screens ?? [],
+          } : user);
         }
+        setLastSync(new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }));
+        setSyncError(false);
       } catch (error) {
-        console.error("Fincore: falha ao atualizar lançamentos", error);
+        if (!cancelled) setSyncError(true);
+        console.error("Fincore: falha ao atualizar dados financeiros", error);
       } finally {
         busy = false;
+        if (!cancelled) setRefreshing(false);
       }
     };
-    const onVisible = () => { if (document.visibilityState === "visible") void refreshEntries(); };
+    const onVisible = () => { if (document.visibilityState === "visible") void refreshFinancialData(); };
+    void refreshFinancialData();
     window.addEventListener("focus", onVisible);
     document.addEventListener("visibilitychange", onVisible);
-    const interval = window.setInterval(() => void refreshEntries(), 60_000);
+    const interval = window.setInterval(() => void refreshFinancialData(), 60_000);
     return () => {
       cancelled = true;
       window.removeEventListener("focus", onVisible);
       document.removeEventListener("visibilitychange", onVisible);
       window.clearInterval(interval);
     };
-  }, [currentUser?.id, dataReady, dataError]);
+  }, [currentUser?.id, dataReady, dataError, centerTableReady, banksReady, contactsTableReady, screen, syncVersion]);
   const screenAllowed = (id: string) => {
     if (!currentUser) return true;
     if (currentUser.role === "master") return true;
@@ -3854,13 +3829,7 @@ function App() {
     setCurrentUser((user) => user && user.role !== "master"
       ? { ...user, units: [...new Set([...user.units, center.name])] }
       : user);
-    try {
-      const accountRows = await readAuthenticatedRows<Account>("accounts");
-      setAccounts(accountRows);
-    } catch (error) {
-      console.error("Fincore: centro criado, mas falhou a atualização das contas", error);
-      setAccounts((old) => [...old, { id: center.name, name: center.name, unit: center.name }]);
-    }
+
   };
   const updateCenter = async (name: string, initials: string, color: string) => {
     if (currentUser?.role !== "master") throw new Error("Apenas o Master pode editar planos de contas.");
@@ -3879,7 +3848,6 @@ function App() {
     setCenters((old) => old.filter((item) => item.name !== name));
     setCategories((old) => old.filter((item) => item.unit !== name));
     setEntries((old) => old.filter((item) => item.unit !== name));
-    setAccounts((old) => old.filter((item) => item.unit !== name));
     setSavedContacts((old) => old.filter((item) => item.unit !== name));
     setFilter((current) => (current === name ? "Todos" : current));
   };
@@ -4054,55 +4022,8 @@ function App() {
     currentUser.role === "master"
       ? centers
       : centers.filter((unit) => currentUser.units.includes(unit.name));
-  const balance = (name: string) =>
-      entries
-        .filter((x) => x.account === name && x.status === "realizado")
-        .reduce((s, x) => s + (x.kind === "receita" ? entryValue(x) : -entryValue(x)), 0),
-    addAccount = async () => {
-      if (currentUser.role !== "master") return;
-      const name = window.prompt("Nome da nova conta:");
-      if (!name?.trim()) return;
-      const unit = window.prompt(
-        `Centro de custo (${centers.map((item) => item.name).join(", ")}):`,
-        centers[0]?.name ?? "",
-      ) as Unit | null;
-      if (!unit || !centers.some((item) => item.name === unit)) return;
-      const account = { id: id(), name: name.trim(), unit };
-      const { error } = await supabase.from("accounts").insert(account);
-      if (error) throw error;
-      setAccounts((old) => [...old, account]);
-    },
-    adjust = async (account: Account) => {
-      if (currentUser.role !== "master") return;
-      const wanted = window.prompt(
-        `Novo saldo de :`,
-        String(balance(account.name)),
-      );
-      if (wanted === null) return;
-      const target = Number(wanted.replace(",", "."));
-      if (Number.isNaN(target)) return;
-      const difference = target - balance(account.name);
-      if (!difference) return;
-      const adjustment: Entry = {
-        id: id(),
-        kind: difference > 0 ? "receita" : "despesa",
-        unit: account.unit,
-        account: account.name,
-        category: "Ajuste de saldo",
-        description: "Ajuste de saldo",
-        beneficiary: "",
-        pix: "",
-        amount: Math.abs(difference),
-        date: new Date().toISOString().slice(0, 10),
-        status: "realizado",
-        recurrence: "nenhuma",
-        installments: 1,
-      };
-      await saveRemoteEntries([adjustment]);
-      setEntries((old) => [adjustment, ...old]);
-    };
-  const key = month.toISOString().slice(0, 7),
-    today = new Date().toISOString().slice(0, 10),
+  const key = localMonthKey(month),
+    today = localDateKey(new Date()),
     visible = entries.filter(
       (x) =>
         currentUser.role === "master" || currentUser.units.includes(x.unit),
@@ -4145,16 +4066,7 @@ function App() {
       (x) => x.kind === "despesa" && x.status === "previsto" && x.date === todayStr,
     ),
     payTodayTotal = payToday.reduce((s, x) => s + x.amount, 0),
-    sum = (k: Kind, status?: Entry["status"]) =>
-      current
-        .filter((x) => x.kind === k && (!status || x.status === status))
-        .reduce((s, x) => s + entryValue(x), 0),
-    totals = {
-      income: sum("receita", "realizado"),
-      expense: sum("despesa", "realizado"),
-      pay: sum("despesa", "previsto"),
-      receive: sum("receita", "previsto"),
-    },
+    totals = summarizeFinancialEntries(current),
     move = (n: number) =>
       setMonth((v) => new Date(v.getFullYear(), v.getMonth() + n, 1)),
     openOverdue = (kind: Kind | "todos" = "todos") => {
@@ -4690,8 +4602,9 @@ function App() {
                     Receitas, despesas e categorias do mês selecionado.
                   </p>
                 </div>
-                <Month value={month} move={move} />
+                <div className="flex flex-wrap items-center gap-3"><Month value={month} move={move} /><button type="button" disabled={refreshing} onClick={() => setSyncVersion(value => value + 1)} className="rounded-xl border border-brand-200 bg-white px-3 py-2 text-xs font-bold text-brand-700 disabled:opacity-50">{refreshing ? "Atualizando…" : "Atualizar dados"}</button></div>
               </div>
+              <p className={`mb-4 text-xs ${syncError ? "font-bold text-red-600" : "text-slate-500"}`}>{syncError ? "Não foi possível atualizar os dados. Clique em Atualizar dados para tentar novamente." : lastSync ? `Dados atualizados às ${lastSync}. Período por vencimento; atrasos consideram todos os meses.` : "Carregando atualização dos dados…"}</p>
               {pending.length > 0 && (
                 <section className="mb-5 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
                   <b>⚠ Pendências de vencimento: {pending.length}</b>
@@ -4805,56 +4718,23 @@ function App() {
                   )}
                 </div>
               </section>
-              {isMaster && (
               <section className="mt-5 rounded-2xl bg-white p-5 shadow-sm">
-                <div className="mb-4 flex items-center justify-between">
-                  <div>
-                    <h2 className="font-extrabold text-slate-900">
-                      Minhas contas
-                    </h2>
-                    <p className="text-xs text-gray-400">
-                      Saldo calculado pelos lancamentos realizados.
-                    </p>
-                  </div>
-                  <span className="text-xs font-bold text-gray-400">
-                    Uma conta por centro de custo
-                  </span>
-                </div>
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                  {accounts
-                    .filter(
-                      (account) =>
-                        currentUser.role === "master" ||
-                        currentUser.units.includes(account.unit),
-                    )
-                    .map((account) => (
-                      <div key={account.id} className="rounded-xl border p-4">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="font-bold text-slate-900">
-                              {account.name}
-                            </p>
-                            <p className="text-xs text-gray-400">
-                              Conta manual
-                            </p>
-                          </div>
-                          <p className="font-extrabold text-brand-600">
-                            {fmt(balance(account.name))}
-                          </p>
-                        </div>
-                        {currentUser.role === "master" && (
-                          <button
-                            onClick={() => adjust(account)}
-                            className="mt-3 rounded-lg border px-2.5 py-1.5 text-xs font-bold text-gray-600"
-                          >
-                            Ajustar saldo
-                          </button>
-                        )}
-                      </div>
-                    ))}
+                <h2 className="font-extrabold text-[#191918]">Resumo dos lançamentos do mês</h2>
+                <p className="mt-1 text-xs text-slate-500">{current.length} lançamento(s), por data de vencimento. Os previstos entram em A pagar / A receber; os realizados em Pagas / Recebidas.</p>
+                <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                  {isMaster && <div className="rounded-xl bg-emerald-50 p-4"><p className="text-xs font-bold text-emerald-800">Receitas totais do mês</p><b className="text-xl text-emerald-700">{fmt(totals.totalIncome)}</b></div>}
+                  <div className="rounded-xl bg-red-50 p-4"><p className="text-xs font-bold text-red-800">Despesas totais do mês</p><b className="text-xl text-red-700">{fmt(totals.totalExpense)}</b></div>
+                  {isMaster && <div className="rounded-xl bg-brand-50 p-4"><p className="text-xs font-bold text-brand-800">Saldo previsto do mês</p><b className="text-xl text-brand-700">{fmt(totals.projectedBalance)}</b></div>}
                 </div>
               </section>
-              )}
+              {isMaster && <section className="mt-5 rounded-2xl bg-white p-5 shadow-sm">
+                <div className="flex items-center justify-between gap-3"><div><h2 className="font-extrabold text-[#191918]">Contas bancárias</h2><p className="text-xs text-slate-500">Saldo dos lançamentos realizados em todos os meses. Previstos não alteram o saldo.</p></div><button onClick={() => setScreen("contas")} className="rounded-xl border border-brand-200 px-3 py-2 text-xs font-bold text-brand-700">Gerenciar contas</button></div>
+                <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                  {banks.map(bank => { const data = summarizeBank(visible, bank.id); return <div key={bank.id} className="rounded-xl border p-4"><p className="font-bold">{bank.name}</p><p className={`mt-2 text-xl font-extrabold ${data.balance < 0 ? "text-red-600" : "text-brand-700"}`}>{fmt(data.balance)}</p><p className="mt-1 text-xs text-slate-500">Recebido {fmt(data.income)} · Pago {fmt(data.expense)}</p></div>; })}
+                  {!banks.length && <p className="text-sm text-slate-500">Nenhuma conta bancária cadastrada. Cadastre as contas que usa para pagar e receber.</p>}
+                </div>
+                {visible.some(entry => !entry.bankId && entry.status === "realizado") && <p className="mt-4 rounded-xl bg-amber-50 p-3 text-xs text-amber-900">Há movimentações realizadas sem conta bancária informada. Elas aparecem nos totais financeiros, mas não são atribuídas ao saldo de nenhum banco.</p>}
+              </section>}
               <section className="mt-5 grid gap-4 lg:grid-cols-4">
                 {allowedUnits.map((u) => {
                   const d = current.filter((x) => x.unit === u.name),
@@ -4959,10 +4839,11 @@ function App() {
                   Lançamentos de {labelMonth(month)}
                 </h2>
                 <p className="mb-4 text-xs text-gray-400">
-                  Atualizados automaticamente conforme os lançamentos.
+                  Mostrando {Math.min(current.length, 5)} de {current.length} lançamento(s) do mês, ordenados por vencimento.
                 </p>
+                <button type="button" onClick={() => { setFilter("Todos"); setCounterpartyFilter("todos"); setSearch(""); setEntryFilter("todos"); setPeriodMode("mes"); setScreen("lancamentos"); }} className="mb-4 rounded-xl border border-brand-200 px-3 py-2 text-xs font-bold text-brand-700">Ver todos os {current.length} lançamentos do mês</button>
                 <Entries
-                  entries={current.slice(0, 5)}
+                  entries={[...current].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5)}
                   categories={categories}
                   banks={banks}
                   settle={settle}
@@ -4986,77 +4867,7 @@ function App() {
               </section>
             </>
           ) : screen === "contas" ? (
-            <>
-            {isMaster && (
-            <section className="rounded-2xl bg-white p-5 shadow-sm">
-              <div className="mb-5 flex items-center justify-between">
-                <div>
-                  <h2 className="font-extrabold text-slate-900">
-                    Contas dos centros de custo
-                  </h2>
-                  <p className="text-xs text-gray-400">
-                    Cada conta representa um centro. Ajustes viram lancamentos
-                    automaticamente.
-                  </p>
-                </div>
-                {currentUser.role === "master" && (
-                  <button
-                    onClick={addAccount}
-                    className="rounded-xl bg-brand-700 px-3 py-2 text-xs font-bold text-white"
-                  >
-                    + Nova conta
-                  </button>
-                )}
-              </div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                {accounts
-                  .filter(
-                    (account) =>
-                      currentUser.role === "master" ||
-                      currentUser.units.includes(account.unit),
-                  )
-                  .map((account) => (
-                    <article
-                      key={account.id}
-                      className="rounded-2xl border p-5"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="font-extrabold text-slate-900">
-                            {account.name}
-                          </p>
-                          <p className="text-xs text-gray-400">
-                            Centro de custo
-                          </p>
-                        </div>
-                        <p className="text-lg font-extrabold text-brand-600">
-                          {fmt(balance(account.name))}
-                        </p>
-                      </div>
-                      {currentUser.role === "master" && (
-                        <button
-                          onClick={() => adjust(account)}
-                          className="mt-4 rounded-xl border px-3 py-2 text-xs font-bold text-gray-700"
-                        >
-                          Ajustar saldo
-                        </button>
-                      )}
-                    </article>
-                  ))}
-              </div>
-            </section>
-            )}
-            <BanksSection
-              banks={banks}
-              ready={banksReady}
-              canManage={currentUser.role === "master"}
-              usage={entries.reduce<Record<string, number>>((count, entry) => {
-                if (entry.bankId) count[entry.bankId] = (count[entry.bankId] ?? 0) + 1;
-                return count;
-              }, {})}
-              setBanks={setBanks}
-            />
-            </>
+            <BanksSection banks={banks} ready={banksReady} canManage={isMaster} entries={visible} setBanks={setBanks} />
           ) : screen === "contatos" ? (
             <ContactsScreen
               contacts={contacts}
@@ -5094,7 +4905,7 @@ function App() {
                   currentUser.role === "master" ||
                   currentUser.units.includes(entry.unit),
               )}
-              accounts={accounts}
+              banks={banks}
               allowedUnits={allowedUnits}
               categories={categories}
               contacts={contacts.filter((contact) => allowedUnits.some((allowed) => allowed.name === contact.unit))}

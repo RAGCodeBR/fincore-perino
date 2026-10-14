@@ -706,4 +706,9 @@ $$;
 revoke all on function public.create_managed_cost_center(text, text, text) from public, anon;
 grant execute on function public.create_managed_cost_center(text, text, text) to authenticated;
 
+-- Contas bancárias separadas de centros de custo
+-- Centros de custo classificam lançamentos; contas bancárias são public.banks.
+-- Mantém as contas legadas e os lançamentos para preservar todo o histórico.
+alter table public.cost_centers disable trigger create_cost_center_account;
+
 commit;

@@ -26,7 +26,7 @@ A estrutura já foi instalada. `supabase/instalacao-limpa.sql` serve apenas para
 
 ## Validação
 
-Build e os seis testes em `tests/seriesDates.test.mjs` passaram. As permissões reais de criar ambiente, conta automática, receita e despesa passaram no banco próprio. Login validado no endereço público como Master em 14/10/2026. O dashboard abriu zerado e os controles Novo plano / centro, Nova despesa e Nova receita foram conferidos na interface.
+Build e os seis testes em `tests/seriesDates.test.mjs` passaram. As permissões reais de criar ambiente, receita e despesa passaram no banco próprio. Login validado no endereço público como Master em 14/10/2026. O dashboard abriu zerado e os controles Novo plano / centro, Nova despesa e Nova receita foram conferidos na interface.
 
 ## Origem e isolamento
 
@@ -37,3 +37,11 @@ A seção Notas da equipe foi retirada desta edição Perino em 14/10/2026.
 ## Criação delegada de planos
 
 Operadores com a permissão `__create_plans__` podem criar planos/centros e categorias. A operação `create_managed_cost_center` valida a permissão no banco e concede ao criador acesso ao centro criado. O perfil continua Operador; administração de usuários e edição/exclusão de centros continuam restritas ao Master. A permissão é preservada nas demais edições de acesso.
+
+## Contas bancárias e dashboard
+
+Centros de custo / planos classificam os lançamentos. Não criam nem preenchem contas bancárias. A aba Contas usa exclusivamente `public.banks`, com vínculo opcional por `entries.bank_id`, separado para cada receita ou despesa. As antigas contas de centros permanecem preservadas como histórico técnico, fora da interface. O gerador automático de contas foi desativado.
+
+O dashboard sincroniza lançamentos, centros, categorias, contas bancárias, contatos e o perfil ao navegar, voltar à aba, pedir atualização ou a cada minuto. Os totais mensais usam vencimento e distinguem previstos de realizados. A prévia avisa quantos registros está mostrando e oferece acesso a todos os lançamentos do mês. Contas bancárias mostram somente movimento realizado vinculado explicitamente ao banco, sem presumir saldo anterior.
+
+Validação: dez testes automatizados; criação de centro sem criação automática de conta/banco e vínculo de receitas/despesas testados no banco em uma transação revertida.
