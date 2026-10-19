@@ -26,6 +26,8 @@ import {
 import { addMonthsClamped, changedSeriesFields, seriesDueDate } from "../lib/seriesDates";
 import { CurrencyInput, Month, fmt, labelMonth, moneyInput, parseMoney } from "./shared";
 import BanksSection from "./Banks";
+import SettlementDialog from "./SettlementDialog";
+import { confirmedSettlement } from "../lib/settlement";
 import { entryValue, summarizeFinancialEntries, summarizeBank, localDateKey, localMonthKey } from "../lib/finance";
 import { snapshotFile, unreadableFileMessage } from "../lib/files";
 import {
@@ -3534,6 +3536,7 @@ function App() {
     [search, setSearch] = useState(""),
     [overdueKind, setOverdueKind] = useState<Kind | "todos">("todos"),
     [notificationsOpen, setNotificationsOpen] = useState(false),
+    [settlementEntry, setSettlementEntry] = useState<Entry | null>(null),
     [menu, setMenu] = useState(false),
     [users, setUsers] = useState<User[]>([]),
     [dataReady, setDataReady] = useState(false),
@@ -4245,18 +4248,7 @@ function App() {
       void refreshContacts();
     },
     settle = async (x: Entry) => {
-      const becomingPaid = x.status !== "realizado";
-      const updated = {
-        ...x,
-        status: becomingPaid ? "realizado" : "previsto",
-        // Em despesas, registra a data do pagamento ao dar baixa (se vazia)
-        // para medir o atraso; ao reverter, limpa a data.
-        ...(x.kind === "despesa"
-          ? { paidDate: becomingPaid ? x.paidDate || todayStr : undefined }
-          : {}),
-      } as Entry;
-      await saveRemoteEntries([updated]);
-      setEntries((old) => old.map((v) => (v.id === x.id ? updated : v)));
+      setSettlementEntry(x);
     },
     remove = async (x: Entry, scope: "one" | "series" = "one") => {
       const removed = entries.filter((v) =>
@@ -5378,6 +5370,18 @@ function App() {
           }}
         />
       )}{" "}
+      {settlementEntry && <SettlementDialog
+        entry={settlementEntry}
+        bankName={banks.find(bank => bank.id === settlementEntry.bankId)?.name}
+        close={() => setSettlementEntry(null)}
+        confirm={async (effectiveDate) => {
+          const latest = entries.find(entry => entry.id === settlementEntry.id);
+          const updated = confirmedSettlement(latest, settlementEntry, effectiveDate, todayStr);
+          await saveRemoteEntries([updated]);
+          setEntries(old => old.map(entry => entry.id === updated.id ? updated : entry));
+          setSettlementEntry(null);
+        }}
+      />}
       {categoryModal && (
         <NewCategory
           close={() => setCategoryModal(false)}
