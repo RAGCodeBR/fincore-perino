@@ -1,3 +1,4 @@
+import { loginErrorMessage } from "../lib/authErrors";
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
 import {
   readAuthenticatedRows,
@@ -567,11 +568,7 @@ function Login({ onLogin }: { onLogin: (user: User) => void }) {
       password,
     });
     if (authError || !data.user) {
-      setError(
-        authError?.message.toLowerCase().includes("email not confirmed")
-          ? "Este acesso ainda precisa ser ativado pelo link enviado ao e-mail cadastrado."
-          : "E-mail ou senha inválidos.",
-      );
+      setError(loginErrorMessage(authError));
       setBusy(false);
       return;
     }
